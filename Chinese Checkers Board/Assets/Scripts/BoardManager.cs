@@ -18,11 +18,22 @@ public class BoardManager : MonoBehaviour {
 
     public GameObject spaceToken;
 
+    public Material player1TargetMaterial;
+    public Material player2TargetMaterial;
+    public Material neutralTargetMaterial;
+    public GameObject targetToken;
+    private Vector2Int targetBPos;
+    private int target1Index;
+    private int target2Index;
+
     // an int that corresponds to the current turn number
     // use % to get whose turn it is.
     int playerTurn;
-    // is true if the player has just jumped.
+    // is true if the current player has just jumped.
     bool hasJumped;
+    // true if the player is selecting a target
+    // false if the player is actually moving it
+    bool isSelectingTarget;
 
     // Use this for initialization
     void Start()
@@ -32,113 +43,216 @@ public class BoardManager : MonoBehaviour {
         //set up the board here:
         for (int i = 0; i < width; i++) for (int j = 0; j < height; j++)
             {
-                if (IsFree(i, j))
-                    GameObject.Instantiate(spaceToken, getWorldLocation(i, j), Quaternion.identity);
+                Vector2Int vBPos = new Vector2Int(i, j);
+                if (IsFree(vBPos))
+                    GameObject.Instantiate(spaceToken, GetWorldLocation(vBPos), Quaternion.identity);
             }
         foreach (Marble m in player1)
             if (m != null)
             {
-                Debug.Log(m);
                 m.bm = this;
-                board[m.bx, m.by] = m;
+                m.player = 0;
+                board[m.bPos.x, m.bPos.y] = m;
                 m.SetLocation();
             }
         foreach (Marble m in player2)
             if (m != null)
             {
                 m.bm = this;
-                board[m.bx, m.by] = m;
+                m.player = 1;
+                board[m.bPos.x, m.bPos.y] = m;
                 m.SetLocation();
             }
 
         playerTurn = 0;
-
-        if (player1.Length > 0)
-            target = player1[0];
+        hasJumped = false;
+        isSelectingTarget = true;
+        target = player1[0];
+        SetTargetPosition(target.bPos);
+        target1Index = 0;
+        target2Index = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (target != null)
+        if(Input.GetButtonDown("Prev"))
         {
-            if (Input.GetButtonDown("UpL"))
+            if(playerTurn%2==0)
             {
-                if (target.TryMove(-1, 1))
-                    EndMove();
+                target1Index+=player1.Length-1;
+                target1Index %= player1.Length;
+                SetTargetPosition(player1[target1Index].bPos);
             }
-            else if (Input.GetButtonDown("UpR"))
+            else
             {
-                if (target.TryMove(1, 1))
-                    EndMove();
+                target2Index+=player1.Length-1;
+                target2Index %= player2.Length;
+                SetTargetPosition(player2[target2Index].bPos);
             }
-            else if (Input.GetButtonDown("Left"))
+        }
+        if(Input.GetButtonDown("Next"))
+        {
+            if (playerTurn % 2 == 0)
             {
-                if (target.TryMove(-2, 0))
-                    EndMove();
+                target1Index++;
+                target1Index %= player1.Length;
+                SetTargetPosition(player1[target1Index].bPos);
             }
-            else if (Input.GetButtonDown("Right"))
+            else
             {
-                if (target.TryMove(2, 0))
-                    EndMove();
+                target2Index++;
+                target2Index %= player2.Length;
+                SetTargetPosition(player2[target2Index].bPos);
             }
-            else if (Input.GetButtonDown("DownL"))
+        }
+        if (isSelectingTarget)
+        {
+            if (Input.GetButtonDown("End"))
             {
-                if (target.TryMove(-1, -1))
-                    EndMove();
+                Marble m = board[targetBPos.x, targetBPos.y];
+                if (m!=null && ((m.player - playerTurn) % 2 == 0))
+                {
+                    isSelectingTarget = false;
+                }
+                else
+                {
+                    Debug.Log("You're playing the wrong thing!");
+                }
             }
-            else if (Input.GetButtonDown("DownR"))
+            else
             {
-                if (target.TryMove(1, -1))
-                    EndMove();
+                Vector2Int direction = GetDirectionFromInput();
+                if (direction != Vector2Int.zero && IsOnBoard(targetBPos + direction))
+                    SetTargetPosition(targetBPos + direction);
             }
-            else if(Input.GetButtonDown("Cent"))
-            {
+        }
+        else
+        {
+            if (hasJumped && Input.GetButtonDown("End"))
                 EndMove();
+            else
+            {
+                Vector2Int direction = GetDirectionFromInput();
+                if (direction != Vector2Int.zero)
+                    if (target.TryMove(direction, ref hasJumped))
+                    {
+                        if (hasJumped)
+                            SetTargetPosition(target.bPos);
+                        else
+                          EndMove();
+                    }
             }
         }
     }
 
-    void EndMove()
+    private Vector2Int GetDirectionFromInput()
     {
-        //TODO: write this function for selecting targets, etc.
+        if (Input.GetButtonDown("UpL"))
+            return new Vector2Int(-1, 1);
+        else if (Input.GetButtonDown("UpR"))
+            return new Vector2Int(1, 1);
+        else if (Input.GetButtonDown("Left"))
+            return new Vector2Int(-2, 0);
+        else if (Input.GetButtonDown("Right"))
+            return new Vector2Int(2, 0);
+        else if (Input.GetButtonDown("DownL"))
+            return new Vector2Int(-1, -1);
+        else if (Input.GetButtonDown("DownR"))
+            return new Vector2Int(1,-1);
+        else if (Input.GetButtonDown("Cent"))
+            return new Vector2Int(0, 0);
+        return Vector2Int.zero;
+    }
+
+    private void EndMove()
+    {
+        // TODO: have a better winning animation
+        if (GetIsWin())
+        {
+            if (playerTurn % 2 == 0)
+                foreach (Marble m in player2)
+                    m.gameObject.SetActive(false);
+            else
+                foreach (Marble m in player1)
+                    m.gameObject.SetActive(false);
+        }
         playerTurn++;
-        if (playerTurn % 2 == 0)
-            target = player1[0];
+        // reset the game state:
+        hasJumped = false;
+        isSelectingTarget = true;
+        SetTargetPosition(targetBPos);
+    }
+
+    // Call this to move the target -- also changes its color and stuff!
+    private void SetTargetPosition(Vector2Int newPos)
+    {
+        if (!IsOnBoard(newPos))
+            return;
+        targetBPos = newPos;
+        targetToken.transform.SetPositionAndRotation(GetWorldLocation(targetBPos), Quaternion.identity);
+        Marble m = board[targetBPos.x, targetBPos.y];
+        if (m != null && (m.player - playerTurn) % 2 == 0)
+        {
+            target = m;
+            targetToken.GetComponent<MeshRenderer>().material =
+                (playerTurn % 2 == 0) ? player1TargetMaterial : player2TargetMaterial;
+        }
         else
-            target = player2[0];
+            targetToken.GetComponent<MeshRenderer>().material =
+                neutralTargetMaterial;
     }
 
     // returns whether (bx, by) is a valid point on the board
     // for a complete board, more rules are necessary
-    public bool IsOnBoard(int bx, int by)
+    public bool IsOnBoard(Vector2Int bPos)
     {
         // right coordinates
-        if ((bx + by) % 2 != 0)
+        if ((bPos.x + bPos.y) % 2 != 0)
             return false;
         // in the bounds of the array
-        if (bx < 0 || bx >= width || by < 0 || by >= height)
+        if (bPos.x < 0 || bPos.x >= width || bPos.y < 0 || bPos.y >= height)
             return false;
         // lower triangle
-        if (by <= 8 && ((by < bx - 8) || (by < -bx + 8)))
+        if (bPos.y <= 8 && ((bPos.y < bPos.x - 8) || (bPos.y < -bPos.x + 8)))
             return false;
         // upper triangle
-        if (by >= 8 && ((by > bx + 8) || (by > -bx + 24)))
+        if (bPos.y >= 8 && ((bPos.y > bPos.x + 8) || (bPos.y > -bPos.x + 24)))
             return false;
         return true;
     }
 
-    // This will return whether (bx, by) is unoccupied and in bounds.
-    public bool IsFree (int bx, int by)
+    // This will return whether bPos is unoccupied and in bounds.
+    public bool IsFree (Vector2Int bPos)
     {
-        if (!IsOnBoard(bx, by))
+        if (!IsOnBoard(bPos))
             return false;
-        return board[bx, by] == null;
+        return board[bPos.x, bPos.y] == null;
     }
 
-    // returns the world location of a specific (bx, by) coordinate.
-    public Vector3 getWorldLocation(int bx, int by)
+    // returns the world location of a specific bPos.
+    public Vector3 GetWorldLocation(Vector2Int bPos)
     {
-        return new Vector3((float)bx / 2, 0, (float)(by) * Mathf.Sqrt(3) / 2) * scale + offset;
+        return new Vector3((float)bPos.x / 2, 0, (float)(bPos.y) * Mathf.Sqrt(3) / 2) * scale + offset;
+    }
+
+    //tests to see if all of the marbles are IN the end zone.
+    // returns true iff the CURRENT PLAYER has won
+    private bool GetIsWin()
+    {
+        if (playerTurn % 2 == 0)
+        {
+            foreach (Marble m in player1)
+                if (m.bPos.y <= 12)
+                    return false;
+            return true;
+        }
+        else
+        {
+            foreach (Marble m in player2)
+                if (m.bPos.y >= 4)
+                    return false;
+            return true;
+        }
     }
 }

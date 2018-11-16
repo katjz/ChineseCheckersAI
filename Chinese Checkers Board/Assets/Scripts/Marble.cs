@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Marble : MonoBehaviour {
 
-    public int bx, by;
+    public Vector2Int bPos;
     [HideInInspector]
     public BoardManager bm;
+    // equal to the numeric player minus one (e.g. player 1 would have player = 0)
+    [HideInInspector]
+    public int player;
 
 	// Use this for initialization
 	void Start () {
@@ -20,33 +23,34 @@ public class Marble : MonoBehaviour {
 
     // Moves the player to the specified location. Returns whether
     // the player was able to move there
-    public bool TryMove(int dx, int dy)
+    public bool TryMove(Vector2Int dBPos, ref bool hasJumped)
     {
-        if(bm.IsFree(bx+dx,by+dy))
+        if (!hasJumped && bm.IsFree(bPos + dBPos))
         {
-            RealizeMove(bx + dx, by + dy);
+            RealizeMove(bPos + dBPos);
             return true;
         }
-        else if(bm.IsFree(bx+2*dx, by+2*dy))
+        else if (!bm.IsFree(bPos + dBPos) && bm.IsFree(bPos + dBPos * 2))
         {
-            RealizeMove(bx + 2 * dx, by + 2 * dy);
+            RealizeMove(bPos + dBPos * 2);
+            hasJumped = true;
             return true;
         }
         return false;
     }
 
-    // Assumes that (newBX, newBY) is in the board, and vacant
-    public void RealizeMove(int newBX, int newBY)
+    // Assumes that newBPos is in the board, and vacant
+    public void RealizeMove(Vector2Int newBPos)
     {
-        bm.board[bx, by] = null;
-        bm.board[newBX, newBY] = this;
-        bx = newBX;
-        by = newBY;
+        bm.board[bPos.x, bPos.y] = null;
+        bm.board[newBPos.x, newBPos.y] = this;
+        bPos.x = newBPos.x;
+        bPos.y = newBPos.y;
         SetLocation();
     }
 
     public void SetLocation()
     {
-        transform.localPosition = bm.getWorldLocation(bx, by);
+        transform.localPosition = bm.GetWorldLocation(bPos);
     }
 }
