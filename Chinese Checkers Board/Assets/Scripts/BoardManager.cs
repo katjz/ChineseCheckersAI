@@ -41,12 +41,14 @@ public class BoardManager : MonoBehaviour {
         board = new Marble[width, height];
 
         //set up the board here:
+        /**
         for (int i = 0; i < width; i++) for (int j = 0; j < height; j++)
             {
                 Vector2Int vBPos = new Vector2Int(i, j);
                 if (IsFree(vBPos))
                     GameObject.Instantiate(spaceToken, GetWorldLocation(vBPos), Quaternion.identity);
             }
+        */
         foreach (Marble m in player1)
             if (m != null)
             {
