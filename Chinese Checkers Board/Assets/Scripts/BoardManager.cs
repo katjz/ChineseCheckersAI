@@ -3,32 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
-
-    public int width = 17;
-    public int height = 17;
+    private int width = 25;
+    private int height = 17;
     public Vector3 offset;
     public float scale = 1;
 
     [HideInInspector]
     public Marble[,] board;
-    public Marble[] player1;
-    public Marble[] player2;
-
-    private Marble target;
-
-    public GameObject spaceToken;
-
-    public Material player1TargetMaterial;
-    public Material player2TargetMaterial;
-    public Material neutralTargetMaterial;
-    public GameObject targetToken;
-    private Vector2Int targetBPos;
-    private int target1Index;
-    private int target2Index;
-
+    public Player[] players;
     // an int that corresponds to the current turn number
     // use % to get whose turn it is.
     int playerTurn;
+    // exists just for convenience
+    Player curPlayer;
+
+    private Marble target;
+
+    public Material neutralTargetMaterial;
+    public GameObject targetToken;
+    private Vector2Int targetBPos;
+
     // is true if the current player has just jumped.
     bool hasJumped;
     // true if the player is selecting a target
@@ -40,39 +34,22 @@ public class BoardManager : MonoBehaviour {
     {
         board = new Marble[width, height];
 
-        //set up the board here:
-        /**
-        for (int i = 0; i < width; i++) for (int j = 0; j < height; j++)
-            {
-                Vector2Int vBPos = new Vector2Int(i, j);
-                if (IsFree(vBPos))
-                    GameObject.Instantiate(spaceToken, GetWorldLocation(vBPos), Quaternion.identity);
-            }
-        */
-        foreach (Marble m in player1)
-            if (m != null)
-            {
-                m.bm = this;
-                m.player = 0;
-                board[m.bPos.x, m.bPos.y] = m;
-                m.SetLocation();
-            }
-        foreach (Marble m in player2)
-            if (m != null)
-            {
-                m.bm = this;
-                m.player = 1;
-                board[m.bPos.x, m.bPos.y] = m;
-                m.SetLocation();
-            }
+        foreach (Player player in players)
+            foreach (Marble m in player.pieces)
+                if(m!=null)
+                {
+                    m.bm = this;
+                    m.player = player;
+                    board[m.bPos.x, m.bPos.y] = m;
+                    m.SetLocation();
+                }
 
         playerTurn = 0;
+        curPlayer = players[0];
         hasJumped = false;
         isSelectingTarget = true;
-        target = player1[0];
+        target = curPlayer.pieces[curPlayer.targetIndex];
         SetTargetPosition(target.bPos);
-        target1Index = 0;
-        target2Index = 0;
     }
 
     // Update is called once per frame
@@ -80,42 +57,23 @@ public class BoardManager : MonoBehaviour {
     {
         if(Input.GetButtonDown("Prev"))
         {
-            if(playerTurn%2==0)
-            {
-                target1Index+=player1.Length-1;
-                target1Index %= player1.Length;
-                SetTargetPosition(player1[target1Index].bPos);
-            }
-            else
-            {
-                target2Index+=player1.Length-1;
-                target2Index %= player2.Length;
-                SetTargetPosition(player2[target2Index].bPos);
-            }
+            curPlayer.IncreaseTarget(-1);
+            SetTargetPosition(curPlayer.pieces[curPlayer.targetIndex].bPos);
         }
         if(Input.GetButtonDown("Next"))
         {
-            if (playerTurn % 2 == 0)
-            {
-                target1Index++;
-                target1Index %= player1.Length;
-                SetTargetPosition(player1[target1Index].bPos);
-            }
-            else
-            {
-                target2Index++;
-                target2Index %= player2.Length;
-                SetTargetPosition(player2[target2Index].bPos);
-            }
+            curPlayer.IncreaseTarget(+1);
+            SetTargetPosition(curPlayer.pieces[curPlayer.targetIndex].bPos);
         }
         if (isSelectingTarget)
         {
             if (Input.GetButtonDown("End"))
             {
                 Marble m = board[targetBPos.x, targetBPos.y];
-                if (m!=null && ((m.player - playerTurn) % 2 == 0))
+                if (m!=null && (m.player == curPlayer))
                 {
                     isSelectingTarget = false;
+                    SetTargetMaterial(curPlayer.readyMaterial);
                 }
                 else
                 {
@@ -131,7 +89,12 @@ public class BoardManager : MonoBehaviour {
         }
         else
         {
-            if (hasJumped && Input.GetButtonDown("End"))
+            if (!hasJumped && Input.GetButtonDown("End"))
+            {
+                isSelectingTarget = true;
+                SetTargetMaterial(curPlayer.targetMaterial);
+            }
+            else if (hasJumped && Input.GetButtonDown("End"))
                 EndMove();
             else
             {
@@ -172,17 +135,17 @@ public class BoardManager : MonoBehaviour {
         // TODO: have a better winning animation
         if (GetIsWin())
         {
-            if (playerTurn % 2 == 0)
-                foreach (Marble m in player2)
-                    m.gameObject.SetActive(false);
-            else
-                foreach (Marble m in player1)
-                    m.gameObject.SetActive(false);
+            foreach (Player player in players)
+                if (player != curPlayer)
+                    foreach (Marble m in player.pieces)
+                        m.gameObject.SetActive(false);
         }
         playerTurn++;
+        curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
         isSelectingTarget = true;
+        targetBPos = curPlayer.pieces[curPlayer.targetIndex].bPos;
         SetTargetPosition(targetBPos);
     }
 
@@ -194,19 +157,24 @@ public class BoardManager : MonoBehaviour {
         targetBPos = newPos;
         targetToken.transform.SetPositionAndRotation(GetWorldLocation(targetBPos), Quaternion.identity);
         Marble m = board[targetBPos.x, targetBPos.y];
-        if (m != null && (m.player - playerTurn) % 2 == 0)
+        if (m != null && m.player==curPlayer)
         {
             target = m;
-            targetToken.GetComponent<MeshRenderer>().material =
-                (playerTurn % 2 == 0) ? player1TargetMaterial : player2TargetMaterial;
+            SetTargetMaterial(curPlayer.targetMaterial);
         }
         else
-            targetToken.GetComponent<MeshRenderer>().material =
-                neutralTargetMaterial;
+            SetTargetMaterial(neutralTargetMaterial);
+    }
+
+    private void SetTargetMaterial(Material newMaterial)
+    {
+        targetToken.GetComponent<Renderer>().material = newMaterial;
     }
 
     // returns whether (bx, by) is a valid point on the board
     // for a complete board, more rules are necessary
+    // may have to modify for different arrangements of players
+    // TODO: do the complete board
     public bool IsOnBoard(Vector2Int bPos)
     {
         // right coordinates
@@ -215,12 +183,25 @@ public class BoardManager : MonoBehaviour {
         // in the bounds of the array
         if (bPos.x < 0 || bPos.x >= width || bPos.y < 0 || bPos.y >= height)
             return false;
+
+        //down-triangle
+        if ((bPos.y >= 4) && (bPos.y <= bPos.x + 4) && (bPos.y <= -bPos.x + 28))
+            return true;
+        //up-triangle
+        if ((bPos.y <= 12) && (bPos.y >= bPos.x - 12) && (bPos.y >= -bPos.x + 12))
+            return true;
+        return false;
+
         // lower triangle
         if (bPos.y <= 8 && ((bPos.y < bPos.x - 8) || (bPos.y < -bPos.x + 8)))
             return false;
         // upper triangle
         if (bPos.y >= 8 && ((bPos.y > bPos.x + 8) || (bPos.y > -bPos.x + 24)))
             return false;
+        // lower-left triangle
+        // lower-right triangle
+        // upper-left triangle
+        // upper-right triangle
         return true;
     }
 
@@ -238,23 +219,30 @@ public class BoardManager : MonoBehaviour {
         return new Vector3((float)bPos.x / 2, 0, (float)(bPos.y) * Mathf.Sqrt(3) / 2) * scale + offset;
     }
 
-    //tests to see if all of the marbles are IN the end zone.
+    // tests to see if all of the marbles are IN the end zone.
     // returns true iff the CURRENT PLAYER has won
+    // TODO: update this for multiple players
     private bool GetIsWin()
     {
+        foreach (Marble m in curPlayer.pieces)
+            if(!m.IsInWinningSquares())
+              return false;
+        return true;
+        /**
         if (playerTurn % 2 == 0)
         {
-            foreach (Marble m in player1)
+            foreach (Marble m in players[0].pieces)
                 if (m.bPos.y <= 12)
                     return false;
             return true;
         }
         else
         {
-            foreach (Marble m in player2)
+            foreach (Marble m in players[1].pieces)
                 if (m.bPos.y >= 4)
                     return false;
             return true;
         }
+        */
     }
 }

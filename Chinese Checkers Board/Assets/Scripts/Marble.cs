@@ -9,7 +9,7 @@ public class Marble : MonoBehaviour {
     public BoardManager bm;
     // equal to the numeric player minus one (e.g. player 1 would have player = 0)
     [HideInInspector]
-    public int player;
+    public Player player;
 
 	// Use this for initialization
 	void Start () {
@@ -52,5 +52,13 @@ public class Marble : MonoBehaviour {
     public void SetLocation()
     {
         transform.localPosition = bm.GetWorldLocation(bPos);
+    }
+
+    public bool IsInWinningSquares()
+    {
+        foreach (Vector2Int winningBPos in player.winningSquares)
+            if (bPos == winningBPos)
+                return true;
+        return false;
     }
 }
