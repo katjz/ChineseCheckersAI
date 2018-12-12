@@ -22,12 +22,16 @@ public class BoardManager : MonoBehaviour {
     public Material neutralTargetMaterial;
     public GameObject targetToken;
     private Vector2Int targetBPos;
+    public Vector3 lastpos; //stores the position of the last tile the mouse hovers over
+    public bool wasontile = false;
 
     // is true if the current player has just jumped.
-    bool hasJumped;
+    public bool hasJumped;
     // true if the player is selecting a target
     // false if the player is actually moving it
-    bool isSelectingTarget;
+    public bool isSelectingTarget;
+    public GameObject highlighttile;
+    public int overboard = 0;
 
     // Use this for initialization
     void Start()
@@ -54,7 +58,7 @@ public class BoardManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         if(Input.GetButtonDown("Prev"))
         {
             curPlayer.IncreaseTarget(-1);
@@ -67,7 +71,7 @@ public class BoardManager : MonoBehaviour {
         }
         if (isSelectingTarget)
         {
-            if (Input.GetButtonDown("End"))
+            if (Input.GetButtonDown("End")) //end is space
             {
                 Marble m = board[targetBPos.x, targetBPos.y];
                 if (m!=null && (m.player == curPlayer))
@@ -105,11 +109,31 @@ public class BoardManager : MonoBehaviour {
                         if (hasJumped)
                             SetTargetPosition(target.bPos);
                         else
-                          EndMove();
+                            EndMove();
                     }
             }
+        }/*
+        if (!isSelectingTarget)
+        {
+            if(!hasJumped && Input.GetMouseButtonDown(0))
+            {
+                isSelectingTarget = true;
+            }
+        }*/
+        /*posmouse.x = Event.current.mousePosition.x;
+        posmouse.y = 4;
+        posmouse.z = 
+        if (wasontile == true && Vector3.Distance(posmouse, lastpos) > 15)
+        {
+            highlighttile.transform.position = new Vector3(40, 4, 17);
+            wasontile = false;
+        }*/
+        if (overboard < 1)
+        {
+            highlighttile.transform.position = new Vector3(100, 4, 17);
         }
     }
+
 
     private Vector2Int GetDirectionFromInput()
     {
@@ -160,7 +184,7 @@ public class BoardManager : MonoBehaviour {
         if (m != null && m.player==curPlayer)
         {
             target = m;
-            SetTargetMaterial(curPlayer.targetMaterial);
+            SetTargetMaterial(isSelectingTarget ? m.player.targetMaterial : m.player.readyMaterial);
         }
         else
             SetTargetMaterial(neutralTargetMaterial);
@@ -228,7 +252,7 @@ public class BoardManager : MonoBehaviour {
             if(!m.IsInWinningSquares())
               return false;
         return true;
-        /**
+        /*
         if (playerTurn % 2 == 0)
         {
             foreach (Marble m in players[0].pieces)

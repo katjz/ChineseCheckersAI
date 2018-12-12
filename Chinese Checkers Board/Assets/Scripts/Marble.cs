@@ -10,6 +10,8 @@ public class Marble : MonoBehaviour {
     // equal to the numeric player minus one (e.g. player 1 would have player = 0)
     [HideInInspector]
     public Player player;
+    public GameObject targettoken;
+    public bool click = false; //If you click a marble, you set "click" to true
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +20,11 @@ public class Marble : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (bm.isSelectingTarget == true&&Input.GetMouseButtonDown(0))
+        {
+            click = true;
+            bm.isSelectingTarget = false;
+        }
 		
 	}
 
@@ -47,6 +54,21 @@ public class Marble : MonoBehaviour {
         bPos.x = newBPos.x;
         bPos.y = newBPos.y;
         SetLocation();
+    }
+
+    public void OnMouseOver()
+    {
+        targettoken.transform.position = GetComponent<Transform>().position;
+    }
+
+    public void OnMouseEnter()
+    {
+        bm.overboard += 1;
+    }
+
+    public void OnMouseExit()
+    {
+        bm.overboard = bm.overboard - 1;
     }
 
     public void SetLocation()
