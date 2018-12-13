@@ -51,11 +51,7 @@ public class BoardManager : MonoBehaviour {
     [HideInInspector]
     public bool doingMove; // true if the user has clicked the tile he wants the piece to jump onto, and the move has not been completed
     public int test = 0; //see this variable in inspector to check things
-<<<<<<< HEAD
-    public bool moveto = false; // true if the user clicked the tile he wants the piece to jump onto
-    public bool instruction = false; // true if the how-to-play instruction is displayed
-=======
->>>>>>> 995626bfa223379d22ea845838739bbb3f5d6cb2
+
 
     // Use this for initialization
     void Start()
