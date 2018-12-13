@@ -21,7 +21,7 @@ public class BoardManager : MonoBehaviour {
 
     public Material neutralTargetMaterial;
     public GameObject targetToken;
-    private Vector2Int targetBPos;
+    //private Vector2Int targetBPos;
 
     public Vector3 tileglobal; //stores the global position of the last tile the mouse hovers over
     public Vector2 tilelocal; //stores the local position of the last tile the mouse hovers over
@@ -35,9 +35,9 @@ public class BoardManager : MonoBehaviour {
     public bool isSelectingTarget;
     public GameObject highlighttile;
     public int overboard = 0;
-    public Vector2Int selectpos; //stores the position of the marble selected
+    //public Vector2Int selectpos; //stores the position of the marble selected
     public int test = 0; //see this variable in inspector to check things
-    public bool clicktojump = false; // true if the user clicked the tile he wants the piece to jump onto
+    public bool moveto = false; // true if the user clicked the tile he wants the piece to jump onto
 
     // Use this for initialization
     void Start()
@@ -124,19 +124,20 @@ public class BoardManager : MonoBehaviour {
         {
             if ((hasJumped && Input.GetButtonDown("End"))||hasWalked)
                 EndMove();
-            else if (clicktojump)
+            else if (moveto)
             {
-                clicktojump = false;
-                Vector2Int direction = GetDirectionFromInput();
+                moveto = false;
+                Vector2Int direction = GetDirectionFromTile();
                 if (direction != Vector2Int.zero)
                 {
-                    if (target.TryMove(direction))
-                    {
-                        if(hasJumped)
-                        {
-                            target.istarget = true;
-                        }
-                    }
+                    target.TryMove(direction);
+                    //if (target.TryMove(direction))
+                    //{
+                    //    //if(hasJumped)
+                    //    //{
+                    //    //    target.istarget = true;
+                    //    //}
+                    //}
                 }
             }
         }
@@ -147,27 +148,12 @@ public class BoardManager : MonoBehaviour {
     }
 
 
-    private Vector2Int GetDirectionFromInput()
+    private Vector2Int GetDirectionFromTile()
     {
-        /*if (Input.GetButtonDown("UpL"))
-            return new Vector2Int(-1, 1);
-        else if (Input.GetButtonDown("UpR"))
-            return new Vector2Int(1, 1);
-        else if (Input.GetButtonDown("Left"))
-            return new Vector2Int(-2, 0);
-        else if (Input.GetButtonDown("Right"))
-            return new Vector2Int(2, 0);
-        else if (Input.GetButtonDown("DownL"))
-            return new Vector2Int(-1, -1);
-        else if (Input.GetButtonDown("DownR"))
-            return new Vector2Int(1,-1);
-        else if (Input.GetButtonDown("Cent"))
-            return new Vector2Int(0, 0);
-        return Vector2Int.zero;*/
         Vector2Int dir = new Vector2Int
         {
-            x =(int)tilelocal.x - selectpos.x+12,
-            y =(int)(tilelocal.y/1.5f - selectpos.y+8)
+            x =(int)tilelocal.x - target.bPos.x+12,
+            y =(int)(tilelocal.y/1.5f - target.bPos.y+8)
         };
         return dir;
     }
@@ -188,7 +174,7 @@ public class BoardManager : MonoBehaviour {
         hasJumped = false;
         hasWalked = false;
         isSelectingTarget = true;
-        targetBPos = curPlayer.pieces[curPlayer.targetIndex].bPos;
+        Vector2Int targetBPos = curPlayer.pieces[curPlayer.targetIndex].bPos;
         SetTargetPosition(targetBPos);
     }
 
@@ -197,9 +183,9 @@ public class BoardManager : MonoBehaviour {
     {
         if (!IsOnBoard(newPos))
             return;
-        targetBPos = newPos;
-        targetToken.transform.SetPositionAndRotation(GetWorldLocation(targetBPos), Quaternion.identity);
-        Marble m = board[targetBPos.x, targetBPos.y];
+        target.bPos = newPos;
+        targetToken.transform.SetPositionAndRotation(GetLocalLocation(target.bPos), Quaternion.identity);
+        Marble m = board[target.bPos.x, target.bPos.y];
         if (m != null && m.player==curPlayer)
         {
             target = m;
@@ -234,32 +220,20 @@ public class BoardManager : MonoBehaviour {
         if ((bPos.y <= 12) && (bPos.y >= bPos.x - 12) && (bPos.y >= -bPos.x + 12))
             return true;
         return false;
-
-        // lower triangle
-        if (bPos.y <= 8 && ((bPos.y < bPos.x - 8) || (bPos.y < -bPos.x + 8)))
-            return false;
-        // upper triangle
-        if (bPos.y >= 8 && ((bPos.y > bPos.x + 8) || (bPos.y > -bPos.x + 24)))
-            return false;
-        // lower-left triangle
-        // lower-right triangle
-        // upper-left triangle
-        // upper-right triangle
-        return true;
     }
 
     // This will return whether bPos is unoccupied and in bounds.
     public bool IsFree (Vector2Int bPos)
     {
-        /*if (!IsOnBoard(bPos))
-            return false;*/
+        //if (!IsOnBoard(bPos))
+            //return false;
         return board[bPos.x, bPos.y] == null;
     }
 
     // returns the world location of a specific bPos.
-    public Vector3 GetWorldLocation(Vector2Int bPos)
+    public Vector3 GetLocalLocation(Vector2Int bPos)
     {
-        return new Vector3((float)bPos.x / 2, 0, (float)(bPos.y) * Mathf.Sqrt(3) / 2) * scale + offset;
+        return new Vector3((float)(bPos.x) / 2, 0, (float)(bPos.y) * Mathf.Sqrt(3) / 2) * scale + offset;
     }
 
     // tests to see if all of the marbles are IN the end zone.
@@ -271,21 +245,5 @@ public class BoardManager : MonoBehaviour {
             if(!m.IsInWinningSquares())
               return false;
         return true;
-        /*
-        if (playerTurn % 2 == 0)
-        {
-            foreach (Marble m in players[0].pieces)
-                if (m.bPos.y <= 12)
-                    return false;
-            return true;
-        }
-        else
-        {
-            foreach (Marble m in players[1].pieces)
-                if (m.bPos.y >= 4)
-                    return false;
-            return true;
-        }
-        */
     }
 }
