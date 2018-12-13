@@ -11,7 +11,8 @@ public class Marble : MonoBehaviour {
     [HideInInspector]
     public Player player;
     public GameObject targettoken;
-    public bool click = false; //If you click a marble, you set "click" to true
+    public bool click = false; //to check if the player just clicked the marble
+    public bool istarget = false; // true if this marble just jumped
 
 	// Use this for initialization
 	void Start () {
@@ -20,28 +21,36 @@ public class Marble : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (bm.isSelectingTarget == true&&Input.GetMouseButtonDown(0))
-        {
-            click = true;
-            bm.isSelectingTarget = false;
-        }
-		
-	}
+        if(click)
+            targettoken.transform.position = GetComponent<Transform>().position;
+    }
 
     // Moves the player to the specified location. Returns whether
     // the player was able to move there
-    public bool TryMove(Vector2Int dBPos, ref bool hasJumped)
+    public bool TryMove(Vector2Int dBPos) //oops, Peng modified this
     {
-        if (!hasJumped && bm.IsFree(bPos + dBPos))
+        int dist = Mathf.Abs(dBPos.x) + Mathf.Abs(dBPos.y);
+        if(dist<=4)
         {
-            RealizeMove(bPos + dBPos);
-            return true;
-        }
-        else if (!bm.IsFree(bPos + dBPos) && bm.IsFree(bPos + dBPos * 2))
-        {
-            RealizeMove(bPos + dBPos * 2);
-            hasJumped = true;
-            return true;
+            if (!bm.hasJumped && bm.IsFree(bPos + dBPos) && dist == 2)
+            {
+                RealizeMove(bPos + dBPos);
+                bm.hasWalked = true;
+                transform.position += new Vector3(0, 1.5f, 0);
+                return true;
+            }
+            Vector2Int halfdBPos = new Vector2Int
+            {
+                x = dBPos.x / 2,
+                y = dBPos.y / 2
+            };
+            if (dist == 4&&!bm.IsFree(bPos + halfdBPos) && bm.IsFree(bPos + dBPos))
+            {
+                RealizeMove(bPos + dBPos);
+                bm.hasJumped = true;
+                transform.position += new Vector3(0, 1.5f, 0);
+                return true;
+            }
         }
         return false;
     }
@@ -54,11 +63,24 @@ public class Marble : MonoBehaviour {
         bPos.x = newBPos.x;
         bPos.y = newBPos.y;
         SetLocation();
+        bm.targetToken.transform.position = this.transform.position;
+    }
+
+    public void OnMouseDown()
+    {
+
     }
 
     public void OnMouseOver()
     {
-        targettoken.transform.position = GetComponent<Transform>().position;
+        if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && (istarget || !bm.hasJumped))
+        {
+            click = true;
+            bm.isSelectingTarget = false;
+            bm.selectpos = bPos;
+            this.transform.position += new Vector3(0, 1.5f, 0);
+            bm.target = this;
+        }
     }
 
     public void OnMouseEnter()
@@ -69,6 +91,7 @@ public class Marble : MonoBehaviour {
     public void OnMouseExit()
     {
         bm.overboard = bm.overboard - 1;
+        click = false;
     }
 
     public void SetLocation()

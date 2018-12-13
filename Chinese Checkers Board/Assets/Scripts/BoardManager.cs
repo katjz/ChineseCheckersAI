@@ -15,23 +15,29 @@ public class BoardManager : MonoBehaviour {
     // use % to get whose turn it is.
     int playerTurn;
     // exists just for convenience
-    Player curPlayer;
+    public Player curPlayer;
 
-    private Marble target;
+    public Marble target;
 
     public Material neutralTargetMaterial;
     public GameObject targetToken;
     private Vector2Int targetBPos;
-    public Vector3 lastpos; //stores the position of the last tile the mouse hovers over
-    public bool wasontile = false;
 
+    public Vector3 tileglobal; //stores the global position of the last tile the mouse hovers over
+    public Vector2 tilelocal; //stores the local position of the last tile the mouse hovers over
+ 
     // is true if the current player has just jumped.
     public bool hasJumped;
+    // true if the current player has walked(so cannot do other moves)
+    public bool hasWalked;
     // true if the player is selecting a target
     // false if the player is actually moving it
     public bool isSelectingTarget;
     public GameObject highlighttile;
     public int overboard = 0;
+    public Vector2Int selectpos; //stores the position of the marble selected
+    public int test = 0; //see this variable in inspector to check things
+    public bool clicktojump = false; // true if the user clicked the tile he wants the piece to jump onto
 
     // Use this for initialization
     void Start()
@@ -51,6 +57,7 @@ public class BoardManager : MonoBehaviour {
         playerTurn = 0;
         curPlayer = players[0];
         hasJumped = false;
+        hasWalked = false;
         isSelectingTarget = true;
         target = curPlayer.pieces[curPlayer.targetIndex];
         SetTargetPosition(target.bPos);
@@ -58,7 +65,7 @@ public class BoardManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update()
-    {   
+    {   /*
         if(Input.GetButtonDown("Prev"))
         {
             curPlayer.IncreaseTarget(-1);
@@ -112,22 +119,27 @@ public class BoardManager : MonoBehaviour {
                             EndMove();
                     }
             }
-        }/*
+        }*/
         if (!isSelectingTarget)
         {
-            if(!hasJumped && Input.GetMouseButtonDown(0))
+            if ((hasJumped && Input.GetButtonDown("End"))||hasWalked)
+                EndMove();
+            else if (clicktojump)
             {
-                isSelectingTarget = true;
+                clicktojump = false;
+                Vector2Int direction = GetDirectionFromInput();
+                if (direction != Vector2Int.zero)
+                {
+                    if (target.TryMove(direction))
+                    {
+                        if(hasJumped)
+                        {
+                            target.istarget = true;
+                        }
+                    }
+                }
             }
-        }*/
-        /*posmouse.x = Event.current.mousePosition.x;
-        posmouse.y = 4;
-        posmouse.z = 
-        if (wasontile == true && Vector3.Distance(posmouse, lastpos) > 15)
-        {
-            highlighttile.transform.position = new Vector3(40, 4, 17);
-            wasontile = false;
-        }*/
+        }
         if (overboard < 1)
         {
             highlighttile.transform.position = new Vector3(100, 4, 17);
@@ -137,7 +149,7 @@ public class BoardManager : MonoBehaviour {
 
     private Vector2Int GetDirectionFromInput()
     {
-        if (Input.GetButtonDown("UpL"))
+        /*if (Input.GetButtonDown("UpL"))
             return new Vector2Int(-1, 1);
         else if (Input.GetButtonDown("UpR"))
             return new Vector2Int(1, 1);
@@ -151,7 +163,13 @@ public class BoardManager : MonoBehaviour {
             return new Vector2Int(1,-1);
         else if (Input.GetButtonDown("Cent"))
             return new Vector2Int(0, 0);
-        return Vector2Int.zero;
+        return Vector2Int.zero;*/
+        Vector2Int dir = new Vector2Int
+        {
+            x =(int)tilelocal.x - selectpos.x+12,
+            y =(int)(tilelocal.y/1.5f - selectpos.y+8)
+        };
+        return dir;
     }
 
     private void EndMove()
@@ -168,6 +186,7 @@ public class BoardManager : MonoBehaviour {
         curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
+        hasWalked = false;
         isSelectingTarget = true;
         targetBPos = curPlayer.pieces[curPlayer.targetIndex].bPos;
         SetTargetPosition(targetBPos);
@@ -232,8 +251,8 @@ public class BoardManager : MonoBehaviour {
     // This will return whether bPos is unoccupied and in bounds.
     public bool IsFree (Vector2Int bPos)
     {
-        if (!IsOnBoard(bPos))
-            return false;
+        /*if (!IsOnBoard(bPos))
+            return false;*/
         return board[bPos.x, bPos.y] == null;
     }
 
