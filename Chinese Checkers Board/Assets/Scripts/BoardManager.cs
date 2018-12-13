@@ -38,6 +38,7 @@ public class BoardManager : MonoBehaviour {
     //public Vector2Int selectpos; //stores the position of the marble selected
     public int test = 0; //see this variable in inspector to check things
     public bool moveto = false; // true if the user clicked the tile he wants the piece to jump onto
+    public bool instruction = false; // true if the how-to-play instruction is displayed
 
     // Use this for initialization
     void Start()
