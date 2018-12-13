@@ -30,7 +30,7 @@ public class tile : MonoBehaviour {
     public void OnMouseOver()
     {
         if (!bm.isSelectingTarget && Input.GetMouseButtonDown(0))
-            bm.clicktojump = true;
+            bm.moveto = true;
     }
 
     public void OnMouseExit()

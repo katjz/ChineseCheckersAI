@@ -12,7 +12,7 @@ public class Marble : MonoBehaviour {
     public Player player;
     public GameObject targettoken;
     public bool click = false; //to check if the player just clicked the marble
-    public bool istarget = false; // true if this marble just jumped
+    //public bool istarget = false; // true if this marble just jumped
 
 	// Use this for initialization
 	void Start () {
@@ -36,7 +36,6 @@ public class Marble : MonoBehaviour {
             {
                 RealizeMove(bPos + dBPos);
                 bm.hasWalked = true;
-                transform.position += new Vector3(0, 1.5f, 0);
                 return true;
             }
             Vector2Int halfdBPos = new Vector2Int
@@ -48,7 +47,6 @@ public class Marble : MonoBehaviour {
             {
                 RealizeMove(bPos + dBPos);
                 bm.hasJumped = true;
-                transform.position += new Vector3(0, 1.5f, 0);
                 return true;
             }
         }
@@ -64,22 +62,27 @@ public class Marble : MonoBehaviour {
         bPos.y = newBPos.y;
         SetLocation();
         bm.targetToken.transform.position = this.transform.position;
-    }
-
-    public void OnMouseDown()
-    {
-
-    }
+     }
 
     public void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && (istarget || !bm.hasJumped))
+        //// istarget?
+        //if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && !bm.hasJumped)
+        //{
+        //    click = true;
+        //    bm.isSelectingTarget = false;
+        //    SetLocation();
+        //    bm.target = this;
+        //}
+        if (Input.GetMouseButtonDown(0) && this.player == bm.curPlayer)
         {
-            click = true;
-            bm.isSelectingTarget = false;
-            bm.selectpos = bPos;
-            this.transform.position += new Vector3(0, 1.5f, 0);
-            bm.target = this;
+            if(!bm.hasJumped)
+            {
+                click = true;
+                bm.isSelectingTarget = false;
+                SetLocation();
+                bm.target = this;
+            }
         }
     }
 
@@ -96,7 +99,8 @@ public class Marble : MonoBehaviour {
 
     public void SetLocation()
     {
-        transform.localPosition = bm.GetWorldLocation(bPos);
+        transform.localPosition = bm.GetLocalLocation(bPos);
+        transform.position += new Vector3(0, 1.5f, 0);
     }
 
     public bool IsInWinningSquares()
