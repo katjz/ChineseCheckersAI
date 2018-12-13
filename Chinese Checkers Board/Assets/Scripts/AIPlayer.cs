@@ -5,7 +5,7 @@ using UnityEngine;
 // THIS IS FOR A 2-PLAYER AI ONLY (the AI and the player must be the top and bottom positions).
 // IN THE FOLLOWING CODE: player1 is the bottom player, and player2 is the top player.
 public class AIPlayer : Player {
-
+    public int numFutureTurnsCalculated;
 
 	// Use this for initialization
 	void Start () {
@@ -21,7 +21,7 @@ public class AIPlayer : Player {
     public override void DoMove()
     {
         VBoard internalVBoard = new VBoard(bm, playerNumber);
-        Vector3Int bestMove = internalVBoard.PickMove(1);
+        Vector3Int bestMove = internalVBoard.PickMove(numFutureTurnsCalculated);
         if (bestMove.x < 0)
             Debug.Log("Error with the AI - couldn't find a valid move!");
         pieces[bestMove.x].RealizeMove(new Vector2Int(bestMove.y, bestMove.z));
@@ -58,9 +58,9 @@ public class AIPlayer : Player {
             player1Pieces = new Vector2Int[bm.players[0].pieces.Length];
             for (int i=0;i<bm.players[0].pieces.Length;i++)
                 player1Pieces[i] = bm.players[0].pieces[i].bPos;
-            player2Pieces = new Vector2Int[bm.players[0].pieces.Length];
-            for (int i = 0; i < bm.players[0].pieces.Length; i++)
-                player2Pieces[i] = bm.players[0].pieces[i].bPos;
+            player2Pieces = new Vector2Int[bm.players[1].pieces.Length];
+            for (int i = 0; i < bm.players[1].pieces.Length; i++)
+                player2Pieces[i] = bm.players[1].pieces[i].bPos;
 
             curPlayer = (playerNumber==0);
         }
@@ -84,23 +84,25 @@ public class AIPlayer : Player {
         Vector2Int[] GetMoves(Vector2Int marblePos)
         {
             // NOTE: when we add to a "List<>" object, it automatically adds to the end, so when we loop through the jumpMoves, we can do so while adding elements.
+            // Unlike the player, there is no ability to pass your turn.
             List<Vector2Int> validMoves = new List<Vector2Int>();
             // if we are "walking" the marble
             foreach(Vector2Int direction in directionSet)
                 if (BoardManager.IsOnBoard(marblePos + direction) && boardArr[marblePos.x + direction.x, marblePos.y + direction.y] == false)
                     validMoves.Add(marblePos + direction);
-            
-            //// if we are "jumping" the marble:
-            //List<Vector2Int> jumpMoves = new List<Vector2Int>();
-            //jumpMoves.Add(marblePos);
-            //for (int i = 0; i < jumpMoves.Count; i++)
-            //    foreach (Vector2Int direction in directionSet)
-            //        if (BoardManager.IsOnBoard(marblePos + direction * 2) && boardArr[marblePos.x + 2 * direction.x, marblePos.y + 2 * direction.y] == false)
-            //            if (!jumpMoves.Contains(marblePos + direction * 2))
-            //            {
-            //                jumpMoves.Add(marblePos + direction * 2);
-            //                validMoves.Add(marblePos + direction * 2);
-            //            }
+
+            // if we are "jumping" the marble:
+            List<Vector2Int> jumpMoves = new List<Vector2Int> { marblePos };
+            for (int i = 0; i < jumpMoves.Count; i++)
+                foreach (Vector2Int direction in directionSet)
+                    if (BoardManager.IsOnBoard(marblePos + direction * 2) && 
+                           boardArr[marblePos.x+direction.x, marblePos.y+direction.y]==true &&
+                           boardArr[marblePos.x + 2 * direction.x, marblePos.y + 2 * direction.y] == false)
+                        if (!jumpMoves.Contains(marblePos + direction * 2))
+                        {
+                            jumpMoves.Add(marblePos + direction * 2);
+                            validMoves.Add(marblePos + direction * 2);
+                        }
 
             Vector2Int[] ret = new Vector2Int[validMoves.Count];
             validMoves.CopyTo(ret);
@@ -133,11 +135,14 @@ public class AIPlayer : Player {
             return ret;
         }
 
+        // remember: a high score means that Player1 has a good board.
         float EvaluateBoard()
         {
-            return (0.1f) * (-GetVerticalVariance(player1Pieces) + GetVerticalVariance(player2Pieces))
-                + (0.3f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
-                + (0.6f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces));
+            return (0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
+                + (4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
+                + (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
+                + (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
+                + (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
         }
 
         // the total vertical variance for one player
@@ -156,14 +161,21 @@ public class AIPlayer : Player {
         // the total horizontal variance for one player
         float GetHorizontalVariance(Vector2Int[] playerPieces)
         {
-            float avg = 0;
-            foreach (Vector2 piece in playerPieces)
-                avg += piece.x;
-            avg /= player1Pieces.Length;
+            float avg = GetAverageVertical(playerPieces);
             float ret = 0;
             foreach (Vector2 piece in playerPieces)
                 ret += (piece.x - avg) * (piece.x - avg);
             return ret;
+        }
+
+        // the average y-coordinate for one player
+        float GetAverageVertical(Vector2Int[] playerPieces)
+        {
+            float avg = 0;
+            foreach (Vector2Int piece in playerPieces)
+                avg += piece.y;
+            avg /= player1Pieces.Length;
+            return avg;
         }
 
         // the maximum y-coordinate for one player
@@ -190,6 +202,7 @@ public class AIPlayer : Player {
         // The Vector3Int is really just a hack - the first coordinate is the 
         // id of the marble to move, and the second and third coordinates are the new position.
         // if the first coordinate is negative, an error has occured.
+        // just like with EvaluateBoard(int), we maximize iff we are player1
         public Vector3Int PickMove(int n)
         {
             Vector3Int ret = new Vector3Int(-1, -1, -1);
@@ -214,6 +227,7 @@ public class AIPlayer : Player {
                     }
                 }
             }
+            Debug.Log("Optimal Value: "+optimalValue);
             return ret;
         }
     }

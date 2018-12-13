@@ -11,8 +11,7 @@ public class Player : MonoBehaviour {
     public Marble[] pieces;
     // the material that will highlight your pieces when selected
     public Material targetMaterial;
-    // the material that will highlight your pieces when you're ready to play
-    public int targetIndex;
+    // public int targetIndex;
     // the squares that your pieces must be in in order to win
     public Vector2Int[] winningSquares;
     protected BoardManager bm;
@@ -22,7 +21,7 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        targetIndex = 0;
+        // targetIndex = 0;
 	}
 	
 	// Update is called once per frame
@@ -36,11 +35,13 @@ public class Player : MonoBehaviour {
         this.playerNumber = playerNumber;
     }
 
+    /**
     public void IncreaseTarget(int n)
     {
         targetIndex += pieces.Length + n;
         targetIndex %= pieces.Length;
     }
+    */
 
     // This gets called if "manual" is false.
     public virtual void DoMove()

@@ -120,7 +120,7 @@ public class Marble : MonoBehaviour {
     public void SetLocation()
     {
         transform.localPosition = bm.GetWorldLocation(bPos);
-        transform.position += new Vector3(0, 3.5f, 0);
+        transform.position += new Vector3(0, 1.0f, 0);
     }
 
     public bool IsInWinningSquares()

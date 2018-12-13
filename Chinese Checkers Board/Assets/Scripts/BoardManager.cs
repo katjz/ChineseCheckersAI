@@ -80,7 +80,8 @@ public class BoardManager : MonoBehaviour {
         //hasWalked = false;
         hasFinishedMove = false;
         isSelectingTarget = true;
-        target = curPlayer.pieces[curPlayer.targetIndex];
+        //target = curPlayer.pieces[curPlayer.targetIndex];
+        target = null;
         SetTargetTokenPosition(new Vector2Int(-10,-10));
     }
 
@@ -194,7 +195,8 @@ public class BoardManager : MonoBehaviour {
         targetToken.transform.SetPositionAndRotation(GetWorldLocation(newPos), Quaternion.identity);
         if (IsOnBoard(newPos))
         {
-            Marble m = board[target.bPos.x, target.bPos.y];
+            //Marble m = board[target.bPos.x, target.bPos.y];
+            Marble m = board[newPos.x, newPos.y];
             if (m != null && m.player == curPlayer)
             {
                 target = m;
