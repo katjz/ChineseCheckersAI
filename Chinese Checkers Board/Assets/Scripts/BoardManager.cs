@@ -52,6 +52,7 @@ public class BoardManager : MonoBehaviour {
     public bool doingMove; // true if the user has clicked the tile he wants the piece to jump onto, and the move has not been completed
     public int test = 0; //see this variable in inspector to check things
 
+
     // Use this for initialization
     void Start()
     {
