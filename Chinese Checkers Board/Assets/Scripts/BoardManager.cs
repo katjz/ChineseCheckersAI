@@ -13,7 +13,8 @@ public class BoardManager : MonoBehaviour {
     public Player[] players;
     // an int that corresponds to the current turn number
     // use % to get whose turn it is.
-    int playerTurn;
+    [HideInInspector]
+    public int playerTurn;
     // exists just for convenience
     public Player curPlayer;
 
@@ -218,7 +219,7 @@ public class BoardManager : MonoBehaviour {
     // for a complete board, more rules are necessary
     // may have to modify for different arrangements of players
     // TODO: do the complete board
-    public bool IsOnBoard(Vector2Int bPos)
+    public static bool IsOnBoard(Vector2Int bPos)
     {
         // right coordinates
         if ((bPos.x + bPos.y) % 2 != 0)
