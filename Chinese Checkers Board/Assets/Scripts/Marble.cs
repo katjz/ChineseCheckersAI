@@ -11,9 +11,8 @@ public class Marble : MonoBehaviour {
     [HideInInspector]
     public Player player;
     public GameObject targettoken;
-    public bool click = false; //to check if the player just clicked the marble
-    //public bool istarget = false; // true if this marble just jumped
-
+    public bool click = false; // to check if the player just clicked the marble
+    
 	// Use this for initialization
 	void Start () {
 		
@@ -21,39 +20,64 @@ public class Marble : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(click)
-            targettoken.transform.position = GetComponent<Transform>().position;
+        if (click)
+            bm.SetTargetTokenPosition(bPos);
+            //targettoken.transform.position = GetComponent<Transform>().position;
     }
 
-    // Moves the player to the specified location. Returns whether
+    // Moves the marble to the specified location. Returns whether
     // the player was able to move there
-    public bool TryMove(Vector2Int dBPos) //oops, Peng modified this
+    public bool TryMove(Vector2Int dBPos)
     {
-        int dist = Mathf.Abs(dBPos.x) + Mathf.Abs(dBPos.y);
-        if(dist<=4)
+        // First: we see if where the player wants to move is on the board and unoccupied
+        if (!bm.IsFree(bPos + dBPos))
+            return false;
+        // NOTE: using dist <= 4, dist==2 doesn't work. I know this is ugly, but I don't know a better way.
+        if ((Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 1) || (Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 0))
         {
-            if (!bm.hasJumped && bm.IsFree(bPos + dBPos) && dist == 2)
-            {
-                RealizeMove(bPos + dBPos);
-                bm.hasWalked = true;
-                return true;
-            }
-            Vector2Int halfdBPos = new Vector2Int
-            {
-                x = dBPos.x / 2,
-                y = dBPos.y / 2
-            };
-            if (dist == 4&&!bm.IsFree(bPos + halfdBPos) && bm.IsFree(bPos + dBPos))
-            {
-                RealizeMove(bPos + dBPos);
-                bm.hasJumped = true;
-                return true;
-            }
+            if (bm.hasJumped)
+                return false;
+            RealizeMove(bPos + dBPos);
+            bm.hasFinishedMove = true;
+            return true;
+        }
+        else if((Mathf.Abs(dBPos.x) == 2 && Mathf.Abs(dBPos.y) == 2) || (Mathf.Abs(dBPos.x) == 4 && Mathf.Abs(dBPos.y) == 0))
+        {
+            Vector2Int halfDBPos = new Vector2Int(dBPos.x / 2, dBPos.y / 2);
+            if (bm.IsFree(bPos + halfDBPos))
+                return false;
+            RealizeMove(bPos + dBPos);
+            bm.hasJumped = true;
+            return true;
         }
         return false;
+
+        //int dist = Mathf.Abs(dBPos.x) + Mathf.Abs(dBPos.y);
+        //if(dist<=4)
+        //{
+        //    if (!bm.hasJumped && bm.IsFree(bPos + dBPos) && dist == 2)
+        //    {
+        //        RealizeMove(bPos + dBPos);
+        //        bm.hasWalked = true;
+        //        return true;
+        //    }
+        //    Vector2Int halfdBPos = new Vector2Int
+        //    {
+        //        x = dBPos.x / 2,
+        //        y = dBPos.y / 2
+        //    };
+        //    if (dist == 4&&!bm.IsFree(bPos + halfdBPos) && bm.IsFree(bPos + dBPos))
+        //    {
+        //        RealizeMove(bPos + dBPos);
+        //        bm.hasJumped = true;
+        //        return true;
+        //    }
+        //}
+        //return false;
     }
 
     // Assumes that newBPos is in the board, and vacant
+    // This is the function that actually moves the marble around.
     public void RealizeMove(Vector2Int newBPos)
     {
         bm.board[bPos.x, bPos.y] = null;
@@ -61,46 +85,42 @@ public class Marble : MonoBehaviour {
         bPos.x = newBPos.x;
         bPos.y = newBPos.y;
         SetLocation();
-        bm.targetToken.transform.position = this.transform.position;
-     }
+        //bm.targetToken.transform.position = this.transform.position;
+        bm.SetTargetTokenPosition(bPos);
+    }
 
     public void OnMouseOver()
     {
-        //// istarget?
-        //if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && !bm.hasJumped)
-        //{
-        //    click = true;
-        //    bm.isSelectingTarget = false;
-        //    SetLocation();
-        //    bm.target = this;
-        //}
-        if (Input.GetMouseButtonDown(0) && this.player == bm.curPlayer)
+        if (!bm.curPlayer.isManual)
+            return;
+        if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && bm.isSelectingTarget)//!bm.hasJumped)
         {
-            if(!bm.hasJumped)
-            {
-                click = true;
-                bm.isSelectingTarget = false;
-                SetLocation();
-                bm.target = this;
-            }
+            click = true;
+            bm.isSelectingTarget = false;
+            SetLocation();
+            bm.target = this;
         }
     }
 
     public void OnMouseEnter()
     {
+        if (bm == null)
+            return;
         bm.overboard += 1;
     }
 
     public void OnMouseExit()
     {
+        if (bm==null)
+            return;
         bm.overboard = bm.overboard - 1;
         click = false;
     }
 
     public void SetLocation()
     {
-        transform.localPosition = bm.GetLocalLocation(bPos);
-        transform.position += new Vector3(0, 1.5f, 0);
+        transform.localPosition = bm.GetWorldLocation(bPos);
+        transform.position += new Vector3(0, 3.5f, 0);
     }
 
     public bool IsInWinningSquares()

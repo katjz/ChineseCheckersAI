@@ -18,145 +18,135 @@ public class BoardManager : MonoBehaviour {
     // exists just for convenience
     public Player curPlayer;
 
+    // the marble that is currently being manipulated
     public Marble target;
 
     public Material neutralTargetMaterial;
+    public Material miscellaneousMaterial;
     public GameObject targetToken;
     //private Vector2Int targetBPos;
 
-    public Vector3 tileglobal; //stores the global position of the last tile the mouse hovers over
-    public Vector2 tilelocal; //stores the local position of the last tile the mouse hovers over
- 
+
+    //[HideInInspector]
+    //public Vector2 tileLocal; //stores the local position of the last tile the mouse hovers over
+    //[HideInInspector]
+    //public Vector3 tileGlobal; //stores the global position of the last tile the mouse hovers over
+    [HideInInspector]
+    public Vector2Int tileBPos;
+
     // is true if the current player has just jumped.
+    [HideInInspector]
     public bool hasJumped;
-    // true if the current player has walked(so cannot do other moves)
-    public bool hasWalked;
-    // true if the player is selecting a target
-    // false if the player is actually moving it
+    // true if the current player has walked (and so cannot do other moves). Since re-named to more accurately describe its role with the AI.
+    [HideInInspector]
+    public bool hasFinishedMove;
+    //public bool hasWalked
+    // true if the player is selecting a target ; false if the player is actually moving it
+    [HideInInspector]
     public bool isSelectingTarget;
-    public GameObject highlighttile;
-    public int overboard = 0;
-    //public Vector2Int selectpos; //stores the position of the marble selected
+    // the highlight for the tile the mouse is on.
+    public GameObject highlightTile;
+    [HideInInspector]
+    public int overboard; // a count that is used to keep the mouse correct.
+    [HideInInspector]
+    public bool doingMove; // true if the user has clicked the tile he wants the piece to jump onto, and the move has not been completed
     public int test = 0; //see this variable in inspector to check things
-    public bool moveto = false; // true if the user clicked the tile he wants the piece to jump onto
 
     // Use this for initialization
     void Start()
     {
         board = new Marble[width, height];
 
+        int playerNum = 0;
         foreach (Player player in players)
+        {
+            player.SetBM(this, playerNum);
             foreach (Marble m in player.pieces)
-                if(m!=null)
+                if (m != null)
                 {
                     m.bm = this;
                     m.player = player;
                     board[m.bPos.x, m.bPos.y] = m;
                     m.SetLocation();
                 }
+            playerNum++;
+        }
 
+        overboard = 0;
         playerTurn = 0;
         curPlayer = players[0];
+        doingMove = false;
         hasJumped = false;
-        hasWalked = false;
+        //hasWalked = false;
+        hasFinishedMove = false;
         isSelectingTarget = true;
         target = curPlayer.pieces[curPlayer.targetIndex];
-        SetTargetPosition(target.bPos);
+        SetTargetTokenPosition(new Vector2Int(-10,-10));
     }
 
     // Update is called once per frame
     void Update()
-    {   /*
-        if(Input.GetButtonDown("Prev"))
+    {
+        // NOTE Peng: I changed this so that a player can skip their turn if they choose.
+        // Also, so that after an AI ends their turn, an Update() must be called before a new turn.
+        //if ((hasjumped && input.getbuttondown("end"))||haswalked)
+        if(Input.GetButtonDown("End") || hasFinishedMove)
+            EndMove();
+        else if (doingMove)
         {
-            curPlayer.IncreaseTarget(-1);
-            SetTargetPosition(curPlayer.pieces[curPlayer.targetIndex].bPos);
+            doingMove = false;
+            Vector2Int direction = tileBPos - target.bPos;//GetDirectionFromTile();
+            target.TryMove(direction);
+            //if (direction != Vector2Int.zero)
+            //{
+            //    target.TryMove(direction);
+            //    //if (target.TryMove(direction))
+            //    //{
+            //    //    //if(hasJumped)
+            //    //    //{
+            //    //    //    target.istarget = true;
+            //    //    //}
+            //    //}
+            //}
         }
-        if(Input.GetButtonDown("Next"))
-        {
-            curPlayer.IncreaseTarget(+1);
-            SetTargetPosition(curPlayer.pieces[curPlayer.targetIndex].bPos);
-        }
-        if (isSelectingTarget)
-        {
-            if (Input.GetButtonDown("End")) //end is space
-            {
-                Marble m = board[targetBPos.x, targetBPos.y];
-                if (m!=null && (m.player == curPlayer))
-                {
-                    isSelectingTarget = false;
-                    SetTargetMaterial(curPlayer.readyMaterial);
-                }
-                else
-                {
-                    Debug.Log("You're playing the wrong thing!");
-                }
-            }
-            else
-            {
-                Vector2Int direction = GetDirectionFromInput();
-                if (direction != Vector2Int.zero && IsOnBoard(targetBPos + direction))
-                    SetTargetPosition(targetBPos + direction);
-            }
-        }
-        else
-        {
-            if (!hasJumped && Input.GetButtonDown("End"))
-            {
-                isSelectingTarget = true;
-                SetTargetMaterial(curPlayer.targetMaterial);
-            }
-            else if (hasJumped && Input.GetButtonDown("End"))
-                EndMove();
-            else
-            {
-                Vector2Int direction = GetDirectionFromInput();
-                if (direction != Vector2Int.zero)
-                    if (target.TryMove(direction, ref hasJumped))
-                    {
-                        if (hasJumped)
-                            SetTargetPosition(target.bPos);
-                        else
-                            EndMove();
-                    }
-            }
-        }*/
-        if (!isSelectingTarget)
-        {
-            if ((hasJumped && Input.GetButtonDown("End"))||hasWalked)
-                EndMove();
-            else if (moveto)
-            {
-                moveto = false;
-                Vector2Int direction = GetDirectionFromTile();
-                if (direction != Vector2Int.zero)
-                {
-                    target.TryMove(direction);
-                    //if (target.TryMove(direction))
-                    //{
-                    //    //if(hasJumped)
-                    //    //{
-                    //    //    target.istarget = true;
-                    //    //}
-                    //}
-                }
-            }
-        }
+        // if the mouse is not on the board, get rid of the highlightTile by moving it.
         if (overboard < 1)
         {
-            highlighttile.transform.position = new Vector3(100, 4, 17);
+            SetHighlightLocation(new Vector3(100, 4, 17));
+            //highlightTile.transform.position = new Vector3(100, 4, 17);
         }
     }
 
+    // returns the vector from the highlighted tile to the target marble
+    //private Vector2Int GetDirectionFromTile()
+    //{
+    //    Vector2Int dir = new Vector2Int
+    //    {
+    //        x =(int)tileLocal.x - target.bPos.x+12,
+    //        y =(int)(tileLocal.y/1.5f - target.bPos.y+8)
+    //    };
+    //    return dir;
+    //}
 
-    private Vector2Int GetDirectionFromTile()
+    // called by tile : sets the position of the highlightTile as well as tileGlobal
+    // also does color and stuff
+    public void SetHighlightLocation(Vector3 globalLocation)
     {
-        Vector2Int dir = new Vector2Int
+        //tileLocal = new Vector2(localLocation.x, localLocation.z);
+        //highlightTile.transform.localPosition = new Vector3(localLocation.x, 4, localLocation.z);
+        //tileGlobal = globalLocation;
+        highlightTile.transform.position = new Vector3(globalLocation.x, 4, globalLocation.z);
+        tileBPos = GetVirtualLocation(highlightTile.transform.position);
+        if(IsOnBoard(tileBPos))
         {
-            x =(int)tilelocal.x - target.bPos.x+12,
-            y =(int)(tilelocal.y/1.5f - target.bPos.y+8)
-        };
-        return dir;
+            Marble m = board[tileBPos.x, tileBPos.y];
+            if (m != null && m.player == curPlayer)
+                SetHighlightMaterial(curPlayer.targetMaterial);
+            else
+                SetHighlightMaterial(neutralTargetMaterial);
+        }
+        else
+            SetHighlightMaterial(neutralTargetMaterial);
     }
 
     private void EndMove()
@@ -173,45 +163,68 @@ public class BoardManager : MonoBehaviour {
         curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
-        hasWalked = false;
+        //hasWalked = false;
+        hasFinishedMove = false;
         isSelectingTarget = true;
-        Vector2Int targetBPos = curPlayer.pieces[curPlayer.targetIndex].bPos;
-        SetTargetPosition(targetBPos);
+        SetTargetTokenPosition(new Vector2Int(-10, -10));
+
+        if (!curPlayer.isManual)
+            curPlayer.DoMove();
     }
 
-    // Call this to move the target -- also changes its color and stuff!
-    private void SetTargetPosition(Vector2Int newPos)
+    //// Call this to move the target -- also changes its color and stuff!
+    //private void SetTargetPosition(Vector2Int newPos)
+    //{
+    //    if (!IsOnBoard(newPos))
+    //        return;
+    //    target.bPos = newPos;
+    //    targetToken.transform.SetPositionAndRotation(GetLocalLocation(target.bPos), Quaternion.identity);
+    //    Marble m = board[target.bPos.x, target.bPos.y];
+    //    if (m != null && m.player==curPlayer)
+    //    {
+    //        target = m;
+    //        SetTargetMaterial(isSelectingTarget ? m.player.targetMaterial : m.player.readyMaterial);
+    //    }
+    //    else
+    //        SetTargetMaterial(neutralTargetMaterial);
+    //}
+    // Call this guy instead to move the target token -- also changes its color and stuff!
+    public void SetTargetTokenPosition(Vector2Int newPos)
     {
-        if (!IsOnBoard(newPos))
-            return;
-        target.bPos = newPos;
-        targetToken.transform.SetPositionAndRotation(GetLocalLocation(target.bPos), Quaternion.identity);
-        Marble m = board[target.bPos.x, target.bPos.y];
-        if (m != null && m.player==curPlayer)
+        targetToken.transform.SetPositionAndRotation(GetWorldLocation(newPos), Quaternion.identity);
+        if (IsOnBoard(newPos))
         {
-            target = m;
-            SetTargetMaterial(isSelectingTarget ? m.player.targetMaterial : m.player.readyMaterial);
+            Marble m = board[target.bPos.x, target.bPos.y];
+            if (m != null && m.player == curPlayer)
+            {
+                target = m;
+                SetTargetTokenMaterial(m.player.targetMaterial);
+            }
+            else
+                SetTargetTokenMaterial(neutralTargetMaterial);
         }
         else
-            SetTargetMaterial(neutralTargetMaterial);
+            SetTargetTokenMaterial(neutralTargetMaterial);
     }
 
-    private void SetTargetMaterial(Material newMaterial)
+    private void SetTargetTokenMaterial(Material newMaterial)
     {
         targetToken.GetComponent<Renderer>().material = newMaterial;
     }
+    private void SetHighlightMaterial(Material newMaterial)
+    {
+        highlightTile.GetComponent<Renderer>().material = newMaterial;
+    }
 
-    // returns whether (bx, by) is a valid point on the board
-    // for a complete board, more rules are necessary
-    // may have to modify for different arrangements of players
-    // TODO: do the complete board
+    // returns whether bPos is a valid point on the board.
+    // is a static method so that VBoard can use it.
     public static bool IsOnBoard(Vector2Int bPos)
     {
         // right coordinates
         if ((bPos.x + bPos.y) % 2 != 0)
             return false;
         // in the bounds of the array
-        if (bPos.x < 0 || bPos.x >= width || bPos.y < 0 || bPos.y >= height)
+        if (bPos.x < 0 || bPos.x >= 25 || bPos.y < 0 || bPos.y >= 17)
             return false;
 
         //down-triangle
@@ -226,20 +239,25 @@ public class BoardManager : MonoBehaviour {
     // This will return whether bPos is unoccupied and in bounds.
     public bool IsFree (Vector2Int bPos)
     {
-        //if (!IsOnBoard(bPos))
-            //return false;
+        if (!IsOnBoard(bPos))
+            return false;
         return board[bPos.x, bPos.y] == null;
     }
 
-    // returns the world location of a specific bPos.
-    public Vector3 GetLocalLocation(Vector2Int bPos)
+    // returns the (local) world location of a specific bPos.
+    public Vector3 GetWorldLocation(Vector2Int bPos)
     {
         return new Vector3((float)(bPos.x) / 2, 0, (float)(bPos.y) * Mathf.Sqrt(3) / 2) * scale + offset;
     }
+    // returns the bPos for a specific (local) world location
+    public Vector2Int GetVirtualLocation(Vector3 pos)
+    {
+        Vector3 scaledPos = (pos - offset) / scale;
+        return new Vector2Int(Mathf.RoundToInt(scaledPos.x * 2), Mathf.RoundToInt(scaledPos.z * 2 / Mathf.Sqrt(3)));
+    }
 
-    // tests to see if all of the marbles are IN the end zone.
+    // tests to see if all of the CURRENT PLAYER's marbles are IN the end zone.
     // returns true iff the CURRENT PLAYER has won
-    // TODO: update this for multiple players
     private bool GetIsWin()
     {
         foreach (Marble m in curPlayer.pieces)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class tile : MonoBehaviour {
 
-    public GameObject highlighttile;
+    public GameObject highlightTile;
     public BoardManager bm;
 	// Use this for initialization
 	void Start () {
@@ -19,22 +19,30 @@ public class tile : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        bm.tileglobal = GetComponent<Transform>().position;
-        bm.tileglobal.y = 4;
-        highlighttile.transform.position = bm.tileglobal;
-        bm.tilelocal.x = GetComponent<Transform>().localPosition.x;
-        bm.tilelocal.y = GetComponent<Transform>().localPosition.z;
-        bm.overboard += 1;
-    }
+        if (bm == null)
+            return;
+        //Vector3 position = GetComponent<Transform>().position;
+        //highlightTile.transform.position = position;
+        //bm.tileLocal.x = GetComponent<Transform>().localPosition.x;
+        //bm.tileLocal.y = GetComponent<Transform>().localPosition.z;
 
-    public void OnMouseOver()
-    {
-        if (!bm.isSelectingTarget && Input.GetMouseButtonDown(0))
-            bm.moveto = true;
+        bm.SetHighlightLocation(GetComponent<Transform>().position);
+
+        bm.overboard += 1;
     }
 
     public void OnMouseExit()
     {
+        if (bm == null)
+            return;
         bm.overboard = bm.overboard - 1;
+    }
+
+    public void OnMouseOver()
+    {
+        if (!bm.curPlayer.isManual)
+            return;
+        if (!bm.isSelectingTarget && Input.GetMouseButtonDown(0))
+            bm.doingMove = true;
     }
 }
