@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class helpbutton : MonoBehaviour {
+public class Helpbutton : MonoBehaviour {
     public BoardManager bm;
     public Text text;
 
