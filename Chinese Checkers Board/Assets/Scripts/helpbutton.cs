@@ -7,7 +7,7 @@ public class Helpbutton : MonoBehaviour {
     public BoardManager bm;
     public Text text;
 
-    public void OnMouseDown()
+    public void OnMouseOver()
     {
         Behaviour halo = (Behaviour)this.GetComponent("Halo");
         if (Input.GetMouseButtonDown(0))

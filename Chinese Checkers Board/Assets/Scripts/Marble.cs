@@ -33,7 +33,8 @@ public class Marble : MonoBehaviour {
         if (!bm.IsFree(bPos + dBPos))
             return false;
         // NOTE: using dist <= 4, dist==2 doesn't work. I know this is ugly, but I don't know a better way.
-        if ((Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 1) || (Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 0))
+        //if ((Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 1) || (Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 0))
+        if ((Mathf.Abs(dBPos.x) == 1 && Mathf.Abs(dBPos.y) == 1) || (Mathf.Abs(dBPos.x) == 2 && Mathf.Abs(dBPos.y) == 0))
         {
             if (bm.hasJumped)
                 return false;
@@ -102,11 +103,17 @@ public class Marble : MonoBehaviour {
         }
     }
 
+    public void OnMouseDown()
+    {
+        bm.highlightTile2.transform.position = bm.highlightTile.transform.position;
+    }
+
     public void OnMouseEnter()
     {
         if (bm == null)
             return;
         bm.overboard += 1;
+       //bm.highlightTile.transform.position = bm.GetWorldLocation(bPos);
     }
 
     public void OnMouseExit()
@@ -120,7 +127,7 @@ public class Marble : MonoBehaviour {
     public void SetLocation()
     {
         transform.localPosition = bm.GetWorldLocation(bPos);
-        transform.position += new Vector3(0, 10.0f, 0);
+        transform.position += new Vector3(0, 2.0f, 0);
     }
 
     public bool IsInWinningSquares()

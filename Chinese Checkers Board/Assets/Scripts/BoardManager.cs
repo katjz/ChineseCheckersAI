@@ -46,6 +46,7 @@ public class BoardManager : MonoBehaviour {
     public bool isSelectingTarget;
     // the highlight for the tile the mouse is on.
     public GameObject highlightTile;
+    public GameObject highlightTile2;
     [HideInInspector]
     public int overboard; // a count that is used to keep the mouse correct.
     [HideInInspector]
@@ -81,6 +82,7 @@ public class BoardManager : MonoBehaviour {
         //hasWalked = false;
         hasFinishedMove = false;
         isSelectingTarget = true;
+        highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         //target = curPlayer.pieces[curPlayer.targetIndex];
         target = null;
         SetTargetTokenPosition(new Vector2Int(-10,-10));
@@ -166,8 +168,10 @@ public class BoardManager : MonoBehaviour {
         // reset the game state:
         hasJumped = false;
         //hasWalked = false;
+        highlightTile2.transform.position = new Vector3(100, 4, 50);
         hasFinishedMove = false;
         isSelectingTarget = true;
+        highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         SetTargetTokenPosition(new Vector2Int(-10, -10));
 
         if (!curPlayer.isManual)
