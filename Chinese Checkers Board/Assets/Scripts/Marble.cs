@@ -15,7 +15,7 @@ public class Marble : MonoBehaviour {
     
 	// Use this for initialization
 	void Start () {
-		
+        //GetComponent<Rigidbody>().isKinematic = true;
 	}
 	
 	// Update is called once per frame
