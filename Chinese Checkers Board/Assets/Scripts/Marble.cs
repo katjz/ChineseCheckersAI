@@ -11,6 +11,7 @@ public class Marble : MonoBehaviour {
     [HideInInspector]
     public Player player;
     public GameObject targettoken;
+    [HideInInspector]
     public bool click = false; // to check if the player just clicked the marble
     
 	// Use this for initialization
@@ -98,8 +99,9 @@ public class Marble : MonoBehaviour {
         {
             click = true;
             bm.isSelectingTarget = false;
+            //bm.target = this;
+            bm.SetTargetTokenPosition(this.bPos);
             SetLocation();
-            bm.target = this;
         }
     }
 

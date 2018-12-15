@@ -6,6 +6,8 @@ using UnityEngine;
 // IN THE FOLLOWING CODE: player1 is the bottom player, and player2 is the top player.
 public class AIPlayer : Player {
     public int numFutureTurnsCalculated;
+    [HideInInspector]
+    public bool isPlayer1;
 
 	// Use this for initialization
 	void Start () {
@@ -48,6 +50,8 @@ public class AIPlayer : Player {
         Vector2Int[] player2Pieces;
         // true iff curPlayer is player1
         bool curPlayer;
+        // true iff curPlayer started out as player1
+        bool originalPlayer;
 
         public VBoard(BoardManager bm, int playerNumber)
         {
@@ -63,6 +67,7 @@ public class AIPlayer : Player {
                 player2Pieces[i] = bm.players[1].pieces[i].bPos;
 
             curPlayer = (playerNumber==0);
+            originalPlayer = (playerNumber==0);
         }
 
         // use this to copy a VBoard, e.g. to test out certain moves:
@@ -79,6 +84,7 @@ public class AIPlayer : Player {
                 player2Pieces[i] = original.player2Pieces[i];
 
             curPlayer = !original.curPlayer;
+            originalPlayer = original.originalPlayer;
         }
 
         Vector2Int[] GetMoves(Vector2Int marblePos)
@@ -109,26 +115,69 @@ public class AIPlayer : Player {
             return ret;
         }
 
-        // evaluates the board from player1's perspective
-        // we maximize iff curPlayer is true
-        // doesn't work if n<0!
-        float EvaluateBoard(int n)
+        // HERE we finally produce an optimal move for the AI.
+        // The Vector3Int is really just a hack - the first coordinate is the 
+        // id of the marble to move, and the second and third coordinates are the new position.
+        // if the first coordinate is negative, an error has occured.
+        // just like with EvaluateBoard(int), we maximize iff we are player1
+        public Vector3Int PickMove(int n)
         {
+            Vector3Int ret = new Vector3Int(-1, -1, -1);
             if (n == 0)
-                return EvaluateBoard();
-            float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+                return ret;
+            float optimalValue = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+            bool doesWin = false;
             Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
-            for(int i=0;i<myPieces.Length;i++)
+            for (int i = 0; i < myPieces.Length; i++)
             {
+                if (doesWin == true)
+                    break;
                 Vector2Int piece = myPieces[i];
                 foreach (Vector2Int moveToPos in GetMoves(piece))
                 {
+                    if (doesWin == true)
+                        break;
                     VBoard newBoard = new VBoard(this);
                     newBoard.boardArr[piece.x, piece.y] = false;
                     newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
                     (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n - 1);
-                    if (curPlayer ? (newValue > ret) : (newValue < ret))
+                    float newValue = newBoard.EvaluateBoard(n, ref doesWin);
+                    if (doesWin || (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue)))
+                    {
+                        ret = new Vector3Int(i, moveToPos.x, moveToPos.y);
+                        optimalValue = newValue;
+                    }
+                }
+            }
+            Debug.Log("Optimal Value: " + optimalValue + " won? " + doesWin);
+            return ret;
+        }
+
+        // evaluates the board from player1's perspective
+        // we maximize iff curPlayer is true
+        // doesn't work if n<0!
+        // TODO: ADDD DOESWIN HERE!!!!!!!!!!!!
+        float EvaluateBoard(int n, ref bool doesWin)
+        {
+            if (n == 0)
+                return EvaluateBoard(ref doesWin);
+            float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+            Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
+            for(int i=0;i<myPieces.Length;i++)
+            {
+                if (doesWin == true)
+                    break;
+                Vector2Int piece = myPieces[i];
+                foreach (Vector2Int moveToPos in GetMoves(piece))
+                {
+                    if (doesWin == true)
+                        break;
+                    VBoard newBoard = new VBoard(this);
+                    newBoard.boardArr[piece.x, piece.y] = false;
+                    newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
+                    (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
+                    float newValue = newBoard.EvaluateBoard(n - 1, ref doesWin);
+                    if (doesWin || (curPlayer ? (newValue > ret) : (newValue < ret)))
                         ret = newValue;
                 }
             }
@@ -136,8 +185,35 @@ public class AIPlayer : Player {
         }
 
         // remember: a high score means that Player1 has a good board.
-        float EvaluateBoard()
+        // don't set doesWin = false. Ever.
+        float EvaluateBoard(ref bool doesWin)
         {
+            // set doesWin to true iff the original player wins.
+            if (originalPlayer)
+            {
+                bool isWinNow = false;
+                foreach (Vector2Int piece in player1Pieces)
+                    if (piece.y < 13)
+                    {
+                        isWinNow = false;
+                        break;
+                    }
+                if(isWinNow)
+                    doesWin = true;
+            }
+            else
+            {
+                bool isWinNow = false;
+                foreach (Vector2Int piece in player1Pieces)
+                    if (piece.y > 3)
+                    {
+                        isWinNow = false;
+                        break;
+                    }
+                if (isWinNow)
+                    doesWin = true;
+            }
+
             return (0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
                 + (4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
                 + (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
@@ -195,39 +271,6 @@ public class AIPlayer : Player {
             foreach (Vector2Int piece in player1Pieces)
                 if (piece.y < ret)
                     ret = piece.y;
-            return ret;
-        }
-        
-        // HERE we finally produce an optimal move for the AI.
-        // The Vector3Int is really just a hack - the first coordinate is the 
-        // id of the marble to move, and the second and third coordinates are the new position.
-        // if the first coordinate is negative, an error has occured.
-        // just like with EvaluateBoard(int), we maximize iff we are player1
-        public Vector3Int PickMove(int n)
-        {
-            Vector3Int ret = new Vector3Int(-1, -1, -1);
-            if (n == 0)
-                return ret;
-            float optimalValue = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
-            Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
-            for (int i = 0; i < myPieces.Length; i++)
-            {
-                Vector2Int piece = myPieces[i];
-                foreach (Vector2Int moveToPos in GetMoves(piece))
-                {
-                    VBoard newBoard = new VBoard(this);
-                    newBoard.boardArr[piece.x, piece.y] = false;
-                    newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
-                    (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n);
-                    if (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue))
-                    {
-                        ret = new Vector3Int(i, moveToPos.x, moveToPos.y);
-                        optimalValue = newValue;
-                    }
-                }
-            }
-            Debug.Log("Optimal Value: "+optimalValue);
             return ret;
         }
     }

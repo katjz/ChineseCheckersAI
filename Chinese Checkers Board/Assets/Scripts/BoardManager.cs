@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour {
     public Vector3 offset;
     public float scale = 1;
 
+    public bool hasWon;
     [HideInInspector]
     public Marble[,] board;
     public Player[] players;
@@ -18,14 +19,12 @@ public class BoardManager : MonoBehaviour {
     // exists just for convenience
     public Player curPlayer;
 
-    // the marble that is currently being manipulated
-    public Marble target;
-
     public Material neutralTargetMaterial;
     public Material miscellaneousMaterial;
     public GameObject targetToken;
     //private Vector2Int targetBPos;
 
+    public Marble target;
 
     //[HideInInspector]
     //public Vector2 tileLocal; //stores the local position of the last tile the mouse hovers over
@@ -74,16 +73,15 @@ public class BoardManager : MonoBehaviour {
             playerNum++;
         }
 
+        hasWon = false;
         overboard = 0;
         playerTurn = 0;
-        curPlayer = players[0];
+        curPlayer = players[playerTurn];
         doingMove = false;
         hasJumped = false;
-        //hasWalked = false;
         hasFinishedMove = false;
         isSelectingTarget = true;
         highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
-        //target = curPlayer.pieces[curPlayer.targetIndex];
         target = null;
         SetTargetTokenPosition(new Vector2Int(-10,-10));
     }
@@ -265,11 +263,13 @@ public class BoardManager : MonoBehaviour {
 
     // tests to see if all of the CURRENT PLAYER's marbles are IN the end zone.
     // returns true iff the CURRENT PLAYER has won
+    // alo sets hasWon if need be.
     private bool GetIsWin()
     {
         foreach (Marble m in curPlayer.pieces)
             if(!m.IsInWinningSquares())
               return false;
+        hasWon = true;
         return true;
     }
 }

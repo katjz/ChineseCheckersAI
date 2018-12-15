@@ -16,7 +16,8 @@ public class Player : MonoBehaviour {
     public Vector2Int[] winningSquares;
     protected BoardManager bm;
     // this is useful for an AI:
-    protected int playerNumber;
+    [HideInInspector]
+    public int playerNumber;
 
     // Use this for initialization
     void Start()
