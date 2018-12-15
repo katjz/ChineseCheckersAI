@@ -51,8 +51,7 @@ public class BoardManager : MonoBehaviour {
     public int overboard; // a count that is used to keep the mouse correct.
     [HideInInspector]
     public bool doingMove; // true if the user has clicked the tile he wants the piece to jump onto, and the move has not been completed
-    public int test = 0; //see this variable in inspector to check things
-
+    public bool gameEnded; // true if the game has ended
 
     // Use this for initialization
     void Start()
@@ -158,10 +157,13 @@ public class BoardManager : MonoBehaviour {
         // TODO: have a better winning animation
         if (GetIsWin())
         {
-            foreach (Player player in players)
+            curPlayer.hasWon = true;
+            gameEnded = true;
+            curPlayer.winText.enabled = true;
+            /*foreach (Player player in players)
                 if (player != curPlayer)
                     foreach (Marble m in player.pieces)
-                        m.gameObject.SetActive(false);
+                        m.gameObject.SetActive(false);*/
         }
         playerTurn++;
         curPlayer = players[playerTurn % players.Length];

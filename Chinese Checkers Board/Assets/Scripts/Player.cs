@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // This class is used for player-specific objects. Feel free to add any functions that would be called for each player
 // e.g. in BoardManager, to make the code more readable.
@@ -17,6 +18,8 @@ public class Player : MonoBehaviour {
     protected BoardManager bm;
     // this is useful for an AI:
     protected int playerNumber;
+    public bool hasWon; //true if this player has won
+    public Text winText;
 
     // Use this for initialization
     void Start()

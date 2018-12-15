@@ -90,6 +90,13 @@ public class Marble : MonoBehaviour {
         bm.SetTargetTokenPosition(bPos);
     }
 
+    //destroys the tiles beneath as a player loses the game
+    public void OnCollisionEnter(Collision collision)
+    {
+        if(bm.gameEnded&&!player.hasWon)
+            Destroy(collision.gameObject);
+    }
+
     public void OnMouseOver()
     {
         if (!bm.curPlayer.isManual)
