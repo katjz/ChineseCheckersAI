@@ -2892,6 +2892,7 @@ MonoBehaviour:
   - {x: 7, y: 3}
   - {x: 9, y: 3}
   - {x: 11, y: 3}
+  playerNumber: 0
 --- !u!1 &138378519
 GameObject:
   m_ObjectHideFlags: 0
@@ -8820,6 +8821,7 @@ MonoBehaviour:
   - {x: 2, y: 16}
   - {x: 4, y: 16}
   - {x: 3, y: 18}
+  playerNumber: 0
 --- !u!1 &499504966 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -9236,7 +9238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b1a45bf40de5742946b44724398cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isManual: 0
+  isManual: 1
   pieces:
   - {fileID: 374241750}
   - {fileID: 244509464}
@@ -9260,7 +9262,9 @@ MonoBehaviour:
   - {x: 7, y: 3}
   - {x: 9, y: 3}
   - {x: 11, y: 3}
+  playerNumber: 0
   numFutureTurnsCalculated: 1
+  isPlayer1: 0
 --- !u!1 &508714593
 GameObject:
   m_ObjectHideFlags: 0
@@ -10235,8 +10239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb329231d38934a2689bda2cb4f83824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bm: {fileID: 1511489610}
-  text: {fileID: 468931712}
 --- !u!122 &540410145
 Halo:
   m_ObjectHideFlags: 0
@@ -12240,7 +12242,9 @@ MonoBehaviour:
   - {x: 7, y: 15}
   - {x: 9, y: 15}
   - {x: 11, y: 15}
+  playerNumber: 0
   numFutureTurnsCalculated: 1
+  isPlayer1: 0
 --- !u!4 &650457608
 Transform:
   m_ObjectHideFlags: 0
@@ -26858,17 +26862,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 4, z: 0}
   scale: 2.45
+  hasWon: 0
   players:
   - {fileID: 650457607}
   - {fileID: 507787314}
   playerTurn: 0
   curPlayer: {fileID: 0}
-  target: {fileID: 0}
   neutralTargetMaterial: {fileID: 2100000, guid: 9d0fb78f1131c5e4fbbf4b627af4f8bb,
     type: 2}
   miscellaneousMaterial: {fileID: 2100000, guid: 1e9b00c38e1298349b246413ab532992,
     type: 2}
   targetToken: {fileID: 280571289}
+  target: {fileID: 0}
   tileBPos: {x: 0, y: 0}
   hasJumped: 0
   hasFinishedMove: 0
@@ -28340,6 +28345,7 @@ MonoBehaviour:
   - {x: 7, y: 13}
   - {x: 9, y: 13}
   - {x: 11, y: 13}
+  playerNumber: 0
 --- !u!1001 &1615816261
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32849,6 +32855,7 @@ MonoBehaviour:
   - {x: 22, y: 6}
   - {x: 20, y: 6}
   - {x: 21, y: 7}
+  playerNumber: 0
 --- !u!1 &1811059894 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
