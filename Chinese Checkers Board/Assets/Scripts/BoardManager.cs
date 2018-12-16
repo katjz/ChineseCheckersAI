@@ -6,8 +6,11 @@ using UnityEngine.UI;
 public class BoardManager : MonoBehaviour {
     private int width = 25;
     private int height = 17;
+
     public Vector3 offset;
     public float scale = 1;
+
+	public CameraController camera;
 
     [HideInInspector]
     public Marble[,] board;
@@ -92,7 +95,9 @@ public class BoardManager : MonoBehaviour {
 
     private void ResetNewTurn()
     {
-        curPlayer = players[playerTurn % players.Length];
+        //rotate camera
+
+		curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
         highlightTile.transform.position = new Vector3(100, 4, 50);

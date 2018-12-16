@@ -21,6 +21,7 @@ public class Player : MonoBehaviour {
     [HideInInspector]
     public bool hasWon; //true if this player has won
     public Text winText;
+	public Transform cameraPosition; //specific camera rotation for this player
 
     // Use this for initialization
     void Start()
