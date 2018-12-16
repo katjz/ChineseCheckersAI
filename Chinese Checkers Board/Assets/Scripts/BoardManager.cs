@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour {
     private int width = 25;
@@ -16,14 +17,17 @@ public class BoardManager : MonoBehaviour {
     [HideInInspector]
     public int playerTurn;
     // exists just for convenience
+    [HideInInspector]
     public Player curPlayer;
 
     // the marble that is currently being manipulated
+    [HideInInspector]
     public Marble target;
     
     public Material neutralTargetMaterial;
     public Material miscellaneousMaterial;
     public GameObject targetToken;
+    public bool displayTargetToken;
     //private Vector2Int targetBPos;
 
 
@@ -33,6 +37,9 @@ public class BoardManager : MonoBehaviour {
     //public Vector3 tileGlobal; //stores the global position of the last tile the mouse hovers over
     [HideInInspector]
     public Vector2Int tileBPos;
+
+    public Text playerTurnText;
+    private string playerTurnString = "Player's Turn: ";
 
     // is true if the current player has just jumped.
     [HideInInspector]
@@ -52,6 +59,7 @@ public class BoardManager : MonoBehaviour {
     public int overboard; // a count that is used to keep the mouse correct.
     [HideInInspector]
     public bool doingMove; // true if the user has clicked the tile he wants the piece to jump onto, and the move has not been completed
+    [HideInInspector]
     public bool gameEnded; // true if the game has ended
 
     // Use this for initialization
@@ -76,16 +84,25 @@ public class BoardManager : MonoBehaviour {
 
         overboard = 0;
         playerTurn = 0;
-        curPlayer = players[playerTurn];
         doingMove = false;
+        targetToken.SetActive(displayTargetToken);
+        playerTurnText.enabled = true;
+        ResetNewTurn();
+    }
+
+    private void ResetNewTurn()
+    {
+        curPlayer = players[playerTurn % players.Length];
+        // reset the game state:
         hasJumped = false;
-        //hasWalked = false;
+        highlightTile.transform.position = new Vector3(100, 4, 50);
         hasFinishedMove = false;
         isSelectingTarget = true;
         highlightTile.GetComponent<Renderer>().material = curPlayer.targetMaterial;
-        //target = curPlayer.pieces[curPlayer.targetIndex];
+        SetTargetTokenPosition(new Vector2Int(-10, -10));
         target = null;
-        SetTargetTokenPosition(new Vector2Int(-10,-10));
+        playerTurnText.color = curPlayer.targetMaterial.color;
+        playerTurnText.text = playerTurnString + (playerTurn % players.Length);
     }
 
     // Update is called once per frame
@@ -155,7 +172,6 @@ public class BoardManager : MonoBehaviour {
 
     private void EndMove()
     {
-        // TODO: have a better winning animation
         if (GetIsWin())
         {
             curPlayer.hasWon = true;
@@ -167,16 +183,10 @@ public class BoardManager : MonoBehaviour {
             //            //m.gameObject.SetActive(false);
             //            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
         }
-        playerTurn++;
-        curPlayer = players[playerTurn % players.Length];
-        // reset the game state:
-        hasJumped = false;
-        //hasWalked = false;
-        highlightTile.transform.position = new Vector3(100, 4, 50);
-        hasFinishedMove = false;
-        isSelectingTarget = true;
-        highlightTile.GetComponent<Renderer>().material = curPlayer.targetMaterial;
-        SetTargetTokenPosition(new Vector2Int(-10, -10));
+        if(!gameEnded)
+            playerTurn++;
+
+        ResetNewTurn();
 
         if (!gameEnded&&!curPlayer.isManual)
             curPlayer.DoMove();
@@ -273,6 +283,8 @@ public class BoardManager : MonoBehaviour {
     // returns true iff the CURRENT PLAYER has won
     private bool GetIsWin()
     {
+        if (curPlayer == players[0])
+            return true;
         foreach (Marble m in curPlayer.pieces)
             if(!m.IsInWinningSquares())
               return false;
