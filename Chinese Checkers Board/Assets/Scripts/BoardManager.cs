@@ -160,10 +160,11 @@ public class BoardManager : MonoBehaviour {
             curPlayer.hasWon = true;
             gameEnded = true;
             curPlayer.winText.enabled = true;
-            /*foreach (Player player in players)
+            foreach (Player player in players)
                 if (player != curPlayer)
                     foreach (Marble m in player.pieces)
-                        m.gameObject.SetActive(false);*/
+                        //m.gameObject.SetActive(false);
+                        m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
         }
         playerTurn++;
         curPlayer = players[playerTurn % players.Length];
@@ -176,7 +177,7 @@ public class BoardManager : MonoBehaviour {
         highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         SetTargetTokenPosition(new Vector2Int(-10, -10));
 
-        if (!curPlayer.isManual)
+        if (!gameEnded&&!curPlayer.isManual)
             curPlayer.DoMove();
     }
 
