@@ -18,6 +18,7 @@ public class Player : MonoBehaviour {
     protected BoardManager bm;
     // this is useful for an AI:
     protected int playerNumber;
+    [HideInInspector]
     public bool hasWon; //true if this player has won
     public Text winText;
 

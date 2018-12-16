@@ -21,7 +21,23 @@ public class AIPlayer : Player {
     public override void DoMove()
     {
         VBoard internalVBoard = new VBoard(bm, playerNumber);
-        Vector3Int bestMove = internalVBoard.PickMove(numFutureTurnsCalculated);
+        Vector3Int bestMove = new Vector3Int(-1, -1, -1);
+        bool doesWin = false;
+        bestMove = internalVBoard.PickMove(numFutureTurnsCalculated, ref doesWin);
+        // now, if the player does win, we have to make them win in the least number of possible moves.
+        Debug.Log("Does Win? " + doesWin);
+        if(!doesWin)
+        {
+            for (int i = numFutureTurnsCalculated-1; i >= 0; i--)
+            {
+                doesWin = false;
+                Vector3Int newBestMove = internalVBoard.PickMove(numFutureTurnsCalculated, ref doesWin);
+                if (!doesWin)
+                    break;
+                else
+                    bestMove = newBestMove;
+            }
+        }
         if (bestMove.x < 0)
             Debug.Log("Error with the AI - couldn't find a valid move!");
         pieces[bestMove.x].RealizeMove(new Vector2Int(bestMove.y, bestMove.z));
@@ -48,6 +64,7 @@ public class AIPlayer : Player {
         Vector2Int[] player2Pieces;
         // true iff curPlayer is player1
         bool curPlayer;
+        bool originalPlayer;
 
         public VBoard(BoardManager bm, int playerNumber)
         {
@@ -63,6 +80,7 @@ public class AIPlayer : Player {
                 player2Pieces[i] = bm.players[1].pieces[i].bPos;
 
             curPlayer = (playerNumber==0);
+            originalPlayer = (playerNumber==0);
         }
 
         // use this to copy a VBoard, e.g. to test out certain moves:
@@ -79,6 +97,7 @@ public class AIPlayer : Player {
                 player2Pieces[i] = original.player2Pieces[i];
 
             curPlayer = !original.curPlayer;
+            originalPlayer = original.originalPlayer;
         }
 
         Vector2Int[] GetMoves(Vector2Int marblePos)
@@ -109,26 +128,67 @@ public class AIPlayer : Player {
             return ret;
         }
 
-        // evaluates the board from player1's perspective
-        // we maximize iff curPlayer is true
-        // doesn't work if n<0!
-        float EvaluateBoard(int n)
+        // HERE we finally produce an optimal move for the AI.
+        // The Vector3Int is really just a hack - the first coordinate is the 
+        // id of the marble to move, and the second and third coordinates are the new position.
+        // if the first coordinate is negative, an error has occured.
+        // just like with EvaluateBoard(int), we maximize iff we are player1
+        public Vector3Int PickMove(int n, ref bool doesWin)
         {
+            Vector3Int ret = new Vector3Int(-1, -1, -1);
             if (n == 0)
-                return EvaluateBoard();
-            float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+                return ret;
+            float optimalValue = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
             Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
-            for(int i=0;i<myPieces.Length;i++)
+            for (int i = 0; i < myPieces.Length; i++)
             {
+                if (doesWin)
+                    break;
                 Vector2Int piece = myPieces[i];
                 foreach (Vector2Int moveToPos in GetMoves(piece))
                 {
+                    if (doesWin)
+                        break;
                     VBoard newBoard = new VBoard(this);
                     newBoard.boardArr[piece.x, piece.y] = false;
                     newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
                     (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n - 1);
-                    if (curPlayer ? (newValue > ret) : (newValue < ret))
+                    float newValue = newBoard.EvaluateBoard(n-1, ref doesWin);
+                    if (doesWin || (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue)))
+                    {
+                        ret = new Vector3Int(i, moveToPos.x, moveToPos.y);
+                        optimalValue = newValue;
+                    }
+                }
+            }
+            Debug.Log("Optimal Value: " + optimalValue);
+            return ret;
+        }
+
+        // evaluates the board from player1's perspective
+        // we maximize iff curPlayer is true
+        // doesn't work if n<0!
+        float EvaluateBoard(int n, ref bool doesWin)
+        {
+            if (n == 0)
+                return EvaluateBoard(ref doesWin);
+            float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+            Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
+            for(int i=0;i<myPieces.Length;i++)
+            {
+                if (doesWin)
+                    break;
+                Vector2Int piece = myPieces[i];
+                foreach (Vector2Int moveToPos in GetMoves(piece))
+                {
+                    if (doesWin)
+                        break;
+                    VBoard newBoard = new VBoard(this);
+                    newBoard.boardArr[piece.x, piece.y] = false;
+                    newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
+                    (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
+                    float newValue = newBoard.EvaluateBoard(n - 1, ref doesWin);
+                    if (doesWin || (curPlayer ? (newValue > ret) : (newValue < ret)))
                         ret = newValue;
                 }
             }
@@ -136,13 +196,38 @@ public class AIPlayer : Player {
         }
 
         // remember: a high score means that Player1 has a good board.
-        float EvaluateBoard()
+        // NEVER set doesWin to false.
+        float EvaluateBoard(ref bool doesWin)
         {
-            return (0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
-                + (4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
-                + (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
-                + (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
-                + (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
+            if(originalPlayer)
+            {
+                bool thisIsWin = false;
+                foreach(Vector2Int piece in player1Pieces)
+                    if(piece.y < 13)
+                    {
+                        thisIsWin = false;
+                        break;
+                    }
+                if (thisIsWin)
+                    doesWin = true;
+            }
+            else
+            {
+                bool thisIsWin = false;
+                foreach (Vector2Int piece in player1Pieces)
+                    if (piece.y > 3)
+                    {
+                        thisIsWin = false;
+                        break;
+                    }
+                if (thisIsWin)
+                    doesWin = true;
+            }
+            return //(0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
+                +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces));
+                //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
+                //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
+                //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
         }
 
         // the total vertical variance for one player
@@ -195,39 +280,6 @@ public class AIPlayer : Player {
             foreach (Vector2Int piece in player1Pieces)
                 if (piece.y < ret)
                     ret = piece.y;
-            return ret;
-        }
-        
-        // HERE we finally produce an optimal move for the AI.
-        // The Vector3Int is really just a hack - the first coordinate is the 
-        // id of the marble to move, and the second and third coordinates are the new position.
-        // if the first coordinate is negative, an error has occured.
-        // just like with EvaluateBoard(int), we maximize iff we are player1
-        public Vector3Int PickMove(int n)
-        {
-            Vector3Int ret = new Vector3Int(-1, -1, -1);
-            if (n == 0)
-                return ret;
-            float optimalValue = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
-            Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
-            for (int i = 0; i < myPieces.Length; i++)
-            {
-                Vector2Int piece = myPieces[i];
-                foreach (Vector2Int moveToPos in GetMoves(piece))
-                {
-                    VBoard newBoard = new VBoard(this);
-                    newBoard.boardArr[piece.x, piece.y] = false;
-                    newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
-                    (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n);
-                    if (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue))
-                    {
-                        ret = new Vector3Int(i, moveToPos.x, moveToPos.y);
-                        optimalValue = newValue;
-                    }
-                }
-            }
-            Debug.Log("Optimal Value: "+optimalValue);
             return ret;
         }
     }

@@ -19,13 +19,11 @@ public class tile : MonoBehaviour {
 
     public void OnMouseEnter()
     {
-        if (bm == null)
-            return;
         //Vector3 position = GetComponent<Transform>().position;
         //highlightTile.transform.position = position;
         //bm.tileLocal.x = GetComponent<Transform>().localPosition.x;
         //bm.tileLocal.y = GetComponent<Transform>().localPosition.z;
-        bm.SetHighlightLocation(GetComponent<Transform>().position);
+        bm.SetOutlineLocation(GetComponent<Transform>().position);
 
         bm.overboard += 1;
     }

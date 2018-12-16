@@ -9398,7 +9398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b1a45bf40de5742946b44724398cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isManual: 0
+  isManual: 1
   pieces:
   - {fileID: 374241750}
   - {fileID: 244509464}
@@ -10399,8 +10399,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb329231d38934a2689bda2cb4f83824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bm: {fileID: 1511489610}
-  text: {fileID: 468931712}
 --- !u!122 &540410145
 Halo:
   m_ObjectHideFlags: 0
@@ -12380,7 +12378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b1a45bf40de5742946b44724398cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isManual: 0
+  isManual: 1
   pieces:
   - {fileID: 780653812}
   - {fileID: 195101139}
@@ -12406,7 +12404,7 @@ MonoBehaviour:
   - {x: 15, y: 13}
   hasWon: 0
   winText: {fileID: 1580961547}
-  numFutureTurnsCalculated: 1
+  numFutureTurnsCalculated: 3
 --- !u!4 &650457608
 Transform:
   m_ObjectHideFlags: 0
@@ -17051,7 +17049,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1369880058779284, guid: b1bdd61d833f0417eb10db55f949cb91, type: 3}
       propertyPath: m_Name
-      value: tilehighlight
+      value: outlineTile
       objectReference: {fileID: 0}
     - target: {fileID: 4588929347728022, guid: b1bdd61d833f0417eb10db55f949cb91, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21397,7 +21395,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1369880058779284, guid: b1bdd61d833f0417eb10db55f949cb91, type: 3}
       propertyPath: m_Name
-      value: tilehighlight (1)
+      value: highlightTile
       objectReference: {fileID: 0}
     - target: {fileID: 4588929347728022, guid: b1bdd61d833f0417eb10db55f949cb91, type: 3}
       propertyPath: m_LocalPosition.x
@@ -27203,8 +27201,8 @@ MonoBehaviour:
   hasJumped: 0
   hasFinishedMove: 0
   isSelectingTarget: 0
-  highlightTile: {fileID: 163108185}
-  highlightTile2: {fileID: 257503575}
+  outlineTile: {fileID: 163108185}
+  highlightTile: {fileID: 257503575}
   overboard: 0
   doingMove: 0
   gameEnded: 0
@@ -28739,16 +28737,16 @@ MonoBehaviour:
   - {fileID: 404794533}
   targetMaterial: {fileID: 2100000, guid: ad90f8e02559637499a759eb3fbbd9cb, type: 2}
   winningSquares:
-  - {x: 8, y: 16}
-  - {x: 7, y: 15}
-  - {x: 9, y: 15}
-  - {x: 6, y: 14}
-  - {x: 8, y: 14}
+  - {x: 12, y: 16}
+  - {x: 11, y: 15}
+  - {x: 13, y: 15}
   - {x: 10, y: 14}
-  - {x: 5, y: 13}
-  - {x: 7, y: 13}
+  - {x: 12, y: 14}
+  - {x: 14, y: 14}
   - {x: 9, y: 13}
   - {x: 11, y: 13}
+  - {x: 13, y: 13}
+  - {x: 15, y: 13}
   hasWon: 0
   winText: {fileID: 0}
 --- !u!1001 &1615816261
@@ -31003,7 +31001,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 61
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -31028,13 +31026,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1718775874}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 15, y: 40, z: 17}
+  m_LocalRotation: {x: 0.72742105, y: 0.10071425, z: 0.07633265, w: 0.67445433}
+  m_LocalPosition: {x: 3.1, y: 34.7, z: 19.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 105.017, y: -72.34799, z: -74.341}
 --- !u!1 &1721469528
 GameObject:
   m_ObjectHideFlags: 0

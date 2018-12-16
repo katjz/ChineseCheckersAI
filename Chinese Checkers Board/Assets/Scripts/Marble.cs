@@ -11,6 +11,7 @@ public class Marble : MonoBehaviour {
     [HideInInspector]
     public Player player;
     public GameObject targettoken;
+    [HideInInspector]
     public bool click = false; // to check if the player just clicked the marble
     
 	// Use this for initialization
@@ -97,22 +98,31 @@ public class Marble : MonoBehaviour {
             Destroy(collision.gameObject);
     }
 
-    public void OnMouseOver()
+    //public void OnMouseOver()
+    //{
+    //    if (!bm.curPlayer.isManual)
+    //        return;
+    //    if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && bm.isSelectingTarget)//!bm.hasJumped)
+    //    {
+    //        click = true;
+    //        bm.isSelectingTarget = false;
+    //        SetLocation();
+    //bm.target = this;
+    //    }
+//}
+
+public void OnMouseDown()
     {
         if (!bm.curPlayer.isManual)
             return;
-        if (Input.GetMouseButtonDown(0)&&this.player == bm.curPlayer && bm.isSelectingTarget)//!bm.hasJumped)
+        if (Input.GetMouseButtonDown(0) && this.player == bm.curPlayer && bm.isSelectingTarget)//!bm.hasJumped)
         {
             click = true;
             bm.isSelectingTarget = false;
             SetLocation();
-            bm.target = this;
+            bm.SetTargetTokenPosition(bPos);
+            //bm.highlightTile.transform.position = bm.outlineTile.transform.position; // moved to BoardManager
         }
-    }
-
-    public void OnMouseDown()
-    {
-        bm.highlightTile2.transform.position = bm.highlightTile.transform.position;
     }
 
     public void OnMouseEnter()

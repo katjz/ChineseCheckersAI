@@ -20,7 +20,7 @@ public class BoardManager : MonoBehaviour {
 
     // the marble that is currently being manipulated
     public Marble target;
-
+    
     public Material neutralTargetMaterial;
     public Material miscellaneousMaterial;
     public GameObject targetToken;
@@ -44,9 +44,10 @@ public class BoardManager : MonoBehaviour {
     // true if the player is selecting a target ; false if the player is actually moving it
     [HideInInspector]
     public bool isSelectingTarget;
-    // the highlight for the tile the mouse is on.
+    // the outline for the tile the mouse is on.
+    public GameObject outlineTile;
+    // the highlight for the target's tile
     public GameObject highlightTile;
-    public GameObject highlightTile2;
     [HideInInspector]
     public int overboard; // a count that is used to keep the mouse correct.
     [HideInInspector]
@@ -75,13 +76,13 @@ public class BoardManager : MonoBehaviour {
 
         overboard = 0;
         playerTurn = 0;
-        curPlayer = players[0];
+        curPlayer = players[playerTurn];
         doingMove = false;
         hasJumped = false;
         //hasWalked = false;
         hasFinishedMove = false;
         isSelectingTarget = true;
-        highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
+        highlightTile.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         //target = curPlayer.pieces[curPlayer.targetIndex];
         target = null;
         SetTargetTokenPosition(new Vector2Int(-10,-10));
@@ -112,10 +113,10 @@ public class BoardManager : MonoBehaviour {
             //    //}
             //}
         }
-        // if the mouse is not on the board, get rid of the highlightTile by moving it.
+        // if the mouse is not on the board, get rid of the outlineTile by moving it.
         if (overboard < 1)
         {
-            SetHighlightLocation(new Vector3(100, 4, 17));
+            SetOutlineLocation(new Vector3(100, 4, 17));
             //highlightTile.transform.position = new Vector3(100, 4, 17);
         }
     }
@@ -133,23 +134,23 @@ public class BoardManager : MonoBehaviour {
 
     // called by tile : sets the position of the highlightTile as well as tileGlobal
     // also does color and stuff
-    public void SetHighlightLocation(Vector3 globalLocation)
+    public void SetOutlineLocation(Vector3 globalLocation)
     {
         //tileLocal = new Vector2(localLocation.x, localLocation.z);
         //highlightTile.transform.localPosition = new Vector3(localLocation.x, 4, localLocation.z);
         //tileGlobal = globalLocation;
-        highlightTile.transform.position = new Vector3(globalLocation.x, 4, globalLocation.z);
-        tileBPos = GetVirtualLocation(highlightTile.transform.position);
+        outlineTile.transform.position = new Vector3(globalLocation.x, 4, globalLocation.z);
+        tileBPos = GetVirtualLocation(outlineTile.transform.position);
         if(IsOnBoard(tileBPos))
         {
             Marble m = board[tileBPos.x, tileBPos.y];
-            if (m != null && m.player == curPlayer)
-                SetHighlightMaterial(curPlayer.targetMaterial);
+            if (m != null && m.player == curPlayer && curPlayer.isManual)
+                SetOutlineMaterial(curPlayer.targetMaterial);
             else
-                SetHighlightMaterial(neutralTargetMaterial);
+                SetOutlineMaterial(neutralTargetMaterial);
         }
         else
-            SetHighlightMaterial(neutralTargetMaterial);
+            SetOutlineMaterial(neutralTargetMaterial);
     }
 
     private void EndMove()
@@ -160,21 +161,21 @@ public class BoardManager : MonoBehaviour {
             curPlayer.hasWon = true;
             gameEnded = true;
             curPlayer.winText.enabled = true;
-            foreach (Player player in players)
-                if (player != curPlayer)
-                    foreach (Marble m in player.pieces)
-                        //m.gameObject.SetActive(false);
-                        m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+            //foreach (Player player in players)
+            //    if (player != curPlayer)
+            //        foreach (Marble m in player.pieces)
+            //            //m.gameObject.SetActive(false);
+            //            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
         }
         playerTurn++;
         curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
         //hasWalked = false;
-        highlightTile2.transform.position = new Vector3(100, 4, 50);
+        highlightTile.transform.position = new Vector3(100, 4, 50);
         hasFinishedMove = false;
         isSelectingTarget = true;
-        highlightTile2.GetComponent<Renderer>().material = curPlayer.targetMaterial;
+        highlightTile.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         SetTargetTokenPosition(new Vector2Int(-10, -10));
 
         if (!gameEnded&&!curPlayer.isManual)
@@ -197,6 +198,7 @@ public class BoardManager : MonoBehaviour {
     //    else
     //        SetTargetMaterial(neutralTargetMaterial);
     //}
+
     // Call this guy instead to move the target token -- also changes its color and stuff!
     public void SetTargetTokenPosition(Vector2Int newPos)
     {
@@ -209,6 +211,7 @@ public class BoardManager : MonoBehaviour {
             {
                 target = m;
                 SetTargetTokenMaterial(m.player.targetMaterial);
+                highlightTile.transform.position = outlineTile.transform.position;
             }
             else
                 SetTargetTokenMaterial(neutralTargetMaterial);
@@ -221,9 +224,9 @@ public class BoardManager : MonoBehaviour {
     {
         targetToken.GetComponent<Renderer>().material = newMaterial;
     }
-    private void SetHighlightMaterial(Material newMaterial)
+    private void SetOutlineMaterial(Material newMaterial)
     {
-        highlightTile.GetComponent<Renderer>().material = newMaterial;
+        outlineTile.GetComponent<Renderer>().material = newMaterial;
     }
 
     // returns whether bPos is a valid point on the board.
