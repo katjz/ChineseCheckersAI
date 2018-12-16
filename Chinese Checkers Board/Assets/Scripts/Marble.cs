@@ -92,8 +92,11 @@ public class Marble : MonoBehaviour {
     }
 
     //destroys the tiles beneath as a player loses the game
+    // TODO: gives lots of errors
     public void OnCollisionEnter(Collision collision)
     {
+        if (player == null || bm == null)
+            return;
         if(bm.gameEnded&&!player.hasWon)
             Destroy(collision.gameObject);
     }

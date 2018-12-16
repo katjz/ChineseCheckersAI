@@ -283,8 +283,6 @@ public class BoardManager : MonoBehaviour {
     // returns true iff the CURRENT PLAYER has won
     private bool GetIsWin()
     {
-        if (curPlayer == players[0])
-            return true;
         foreach (Marble m in curPlayer.pieces)
             if(!m.IsInWinningSquares())
               return false;

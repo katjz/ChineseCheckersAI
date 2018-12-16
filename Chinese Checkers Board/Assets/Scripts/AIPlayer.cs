@@ -224,7 +224,8 @@ public class AIPlayer : Player {
                     doesWin = true;
             }
             return //(0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
-                +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces));
+                +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
+                + (0.3f) * (GetHorizontalDeviation(player2Pieces) - GetHorizontalDeviation(player1Pieces));
                 //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
                 //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
                 //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
@@ -250,6 +251,16 @@ public class AIPlayer : Player {
             float ret = 0;
             foreach (Vector2 piece in playerPieces)
                 ret += (piece.x - avg) * (piece.x - avg);
+            return ret;
+        }
+
+        // the total horizontal deviation for one player
+        float GetHorizontalDeviation(Vector2Int[] playerPieces)
+        {
+            float avg = 12;
+            float ret = 0;
+            foreach (Vector2 piece in playerPieces)
+                ret += Mathf.Abs(piece.x - avg);
             return ret;
         }
 
