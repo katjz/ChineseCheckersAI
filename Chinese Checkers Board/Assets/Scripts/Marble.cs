@@ -21,8 +21,6 @@ public class Marble : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (click)
-            bm.SetTargetTokenPosition(bPos);
             //targettoken.transform.position = GetComponent<Transform>().position;
     }
 
@@ -118,9 +116,10 @@ public void OnMouseDown()
     {
         if (!bm.curPlayer.isManual)
             return;
-        if (Input.GetMouseButtonDown(0) && this.player == bm.curPlayer && bm.isSelectingTarget)//!bm.hasJumped)
+		if (Input.GetMouseButtonDown(0) && this.player == bm.curPlayer && (bm.isSelectingTarget || !bm.hasJumped))
         {
-            click = true;
+            //click = true;
+			bm.SetTargetTokenPosition(bPos);
             bm.isSelectingTarget = false;
             SetLocation();
             bm.SetTargetTokenPosition(bPos);

@@ -46,7 +46,6 @@ public class BoardManager : MonoBehaviour {
     public Vector2Int tileBPos;
 
     public Text playerTurnText;
-    private string playerTurnString = "Player's Turn: ";
 
     // is true if the current player has just jumped.
     [HideInInspector]
@@ -115,7 +114,7 @@ public class BoardManager : MonoBehaviour {
 		case "PAI":
 			players = new Player[2];
 			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
-			players[1]=boardObject.transform.GetChild(6).GetComponent<AIPlayer>();
+			players[1]=boardObject.transform.GetChild(7).GetComponent<AIPlayer>();
 			break;
 		case "2P":
 			players = new Player[2];
@@ -166,7 +165,7 @@ public class BoardManager : MonoBehaviour {
         SetTargetTokenPosition(new Vector2Int(-10, -10));
         target = null;
         playerTurnText.color = curPlayer.targetMaterial.color;
-        playerTurnText.text = playerTurnString + (playerTurn % players.Length);
+		playerTurnText.text = "Player " + ((playerTurn + 1) % players.Length) + "'s Turn";
 
 		//reset camController
 		//camControl.newPlayer = false;
@@ -272,7 +271,7 @@ public class BoardManager : MonoBehaviour {
     }
 
 	IEnumerator WaitAI(){
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (0.8f);
 		isRotating=true;
 		camControl.rotate = true;
 	}
@@ -298,21 +297,17 @@ public class BoardManager : MonoBehaviour {
     public void SetTargetTokenPosition(Vector2Int newPos)
     {
         targetToken.transform.SetPositionAndRotation(GetWorldLocation(newPos), Quaternion.identity);
-        if (IsOnBoard(newPos))
-        {
-            //Marble m = board[target.bPos.x, target.bPos.y];
-            Marble m = board[newPos.x, newPos.y];
-            if (m != null && m.player == curPlayer)
-            {
-                target = m;
-                SetTargetTokenMaterial(m.player.targetMaterial);
-                highlightTile.transform.position = outlineTile.transform.position;
-            }
-            else
-                SetTargetTokenMaterial(neutralTargetMaterial);
-        }
-        else
-            SetTargetTokenMaterial(neutralTargetMaterial);
+		if (IsOnBoard (newPos)) {
+			//Marble m = board[target.bPos.x, target.bPos.y];
+			Marble m = board [newPos.x, newPos.y];
+			if (m != null && m.player == curPlayer) {
+				target = m;
+				SetTargetTokenMaterial (m.player.targetMaterial);
+				highlightTile.transform.position = outlineTile.transform.position;
+			} else
+				SetTargetTokenMaterial (neutralTargetMaterial);
+		} else 
+			SetTargetTokenMaterial (neutralTargetMaterial);
     }
 
     private void SetTargetTokenMaterial(Material newMaterial)
