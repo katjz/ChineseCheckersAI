@@ -12,8 +12,10 @@ public class BoardManager : MonoBehaviour {
 
 	public CameraController camControl;
 	private bool firstTurn = true;
+	public bool isRotating;
 
 	public Player[] players;
+	public GameObject boardObject;
 
     [HideInInspector]
     public Marble[,] board;
@@ -67,10 +69,13 @@ public class BoardManager : MonoBehaviour {
     [HideInInspector]
     public bool gameEnded; // true if the game has ended
 
+
+
     // Use this for initialization
     void Start()
     {
-        board = new Marble[width, height];
+		boardObject = GameObject.Find ("Board");
+		board = new Marble[width, height];
 		//get game mode from playerprefs
 		string gameMode=PlayerPrefs.GetString("Mode");
 		setPlayers(gameMode); //populate players[] list according to mode
@@ -95,6 +100,7 @@ public class BoardManager : MonoBehaviour {
         doingMove = false;
         targetToken.SetActive(displayTargetToken);
         playerTurnText.enabled = true;
+		curPlayer=players [playerTurn % players.Length];
         ResetNewTurn();
     }
 
@@ -103,38 +109,38 @@ public class BoardManager : MonoBehaviour {
 		switch (gameMode) {
 		case "AI":
 			players = new Player[2];
-			players [0] = GameObject.Find ("Player1AI").GetComponent<AIPlayer> ();			
-			players [1] = GameObject.Find ("Player4AI").GetComponent<AIPlayer> ();
+			players[0]=boardObject.transform.GetChild(6).GetComponent<AIPlayer>();			
+			players[1]=boardObject.transform.GetChild(7).GetComponent<AIPlayer>();
 			break;
 		case "PAI":
 			players = new Player[2];
-			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player4AI").GetComponent<AIPlayer>();
+			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
+			players[1]=boardObject.transform.GetChild(6).GetComponent<AIPlayer>();
 			break;
 		case "2P":
 			players = new Player[2];
-			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player4New").GetComponent<Player>();
+			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
+			players[1]=boardObject.transform.GetChild(3).GetComponent<Player>();
 			break;
 		case "3P":
 			players = new Player[3];
-			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player3New").GetComponent<Player>();		
-			players[1]=GameObject.Find("Player5New").GetComponent<Player>();
+			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
+			players[1]=boardObject.transform.GetChild(2).GetComponent<Player>();
+			players[2]=boardObject.transform.GetChild(4).GetComponent<Player>();			
 			break;
 		case "6P":
 			players = new Player[6];
-			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player2New").GetComponent<Player>();		
-			players[1]=GameObject.Find("Player3New").GetComponent<Player>();
-			players[0]=GameObject.Find("Player4New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player5New").GetComponent<Player>();		
-			players[1]=GameObject.Find("Player6New").GetComponent<Player>();
+			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
+			players[1]=boardObject.transform.GetChild(1).GetComponent<Player>();
+			players[2]=boardObject.transform.GetChild(2).GetComponent<Player>();
+			players[3]=boardObject.transform.GetChild(3).GetComponent<Player>();			
+			players[4]=boardObject.transform.GetChild(4).GetComponent<Player>();
+			players[5]=boardObject.transform.GetChild(5).GetComponent<Player>();
 			break;
 		default:
 			players = new Player[2];
-			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
-			players[1]=GameObject.Find("Player4New").GetComponent<Player>();
+			players[0]=boardObject.transform.GetChild(0).GetComponent<Player>();			
+			players[1]=boardObject.transform.GetChild(3).GetComponent<Player>();
 			break;
 		}
 
@@ -149,19 +155,7 @@ public class BoardManager : MonoBehaviour {
     private void ResetNewTurn()
     {
 		
-		if (!firstTurn) {
-			//get 'from' and 'to' positions, increment player
-			camControl.from = curPlayer.cameraPosition;
-			curPlayer = players [playerTurn % players.Length];
-			camControl.to = curPlayer.cameraPosition;
-			//rotate camera
-			camControl.newPlayer = true;
-			//camControl.Rotate();
-		} else {
-			//Debug.Log ("first turn");
-			curPlayer = players [playerTurn % players.Length];
-			firstTurn = false;
-		}
+		//curPlayer = players [playerTurn % players.Length];
 
         // reset the game state:
         hasJumped = false;
@@ -244,26 +238,44 @@ public class BoardManager : MonoBehaviour {
     }
 
     private void EndMove()
-    {
-        if (GetIsWin())
-        {
-            curPlayer.hasWon = true;
-            gameEnded = true;
-            curPlayer.winText.enabled = true;
-            //foreach (Player player in players)
-            //    if (player != curPlayer)
-            //        foreach (Marble m in player.pieces)
-            //            //m.gameObject.SetActive(false);
-            //            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
-        }
-        if(!gameEnded)
-            playerTurn++;
+	{
+		bool waitBefore=false;
+		if (GetIsWin ()) {
+			curPlayer.hasWon = true;
+			gameEnded = true;
+			curPlayer.winText.enabled = true;
+			//foreach (Player player in players)
+			//    if (player != curPlayer)
+			//        foreach (Marble m in player.pieces)
+			//            //m.gameObject.SetActive(false);
+			//            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+		}
+		if (!gameEnded)
+			playerTurn++;
+		
+		//rotate camera
+		//get 'from' and 'to' positions, increment player
+		camControl.from = curPlayer.cameraPosition;
+		if (!curPlayer.isManual) {
+			waitBefore = true;
+		}
+		curPlayer = players [playerTurn % players.Length];
+		camControl.to = curPlayer.cameraPosition;
 
+		//rotate camera
+		if (waitBefore)
+			StartCoroutine (WaitAI ());
+		else
+			camControl.rotate = true;
         ResetNewTurn();
 
-        if (!gameEnded&&!curPlayer.isManual)
-            curPlayer.DoMove();
     }
+
+	IEnumerator WaitAI(){
+		yield return new WaitForSeconds (1);
+		isRotating=true;
+		camControl.rotate = true;
+	}
 
     //// Call this to move the target -- also changes its color and stuff!
     //private void SetTargetPosition(Vector2Int newPos)

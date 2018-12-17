@@ -4,22 +4,16 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+	public BoardManager bm;
 
 	public Transform from;
 	public Transform to;
 
 	private float timeCount = 0.0f;
-	public bool newPlayer=false;
+	public bool rotate=false;
 
-	public Transform startPos;
-	public Transform endPos;
-	public float duration = 1.0f;
-	public float speed;
-
-	float startTime;
-	Vector3 centerPoint;
-	Vector3 startRelCenter;
-	Vector3 endRelCenter;
+	public bool waitBefore;
+	public bool waitAfter;
     // Update is called once per frame
     void Update()
     {
@@ -29,30 +23,25 @@ public class CameraController : MonoBehaviour {
 		transform.position = Vector3.Slerp (startRelCenter, endRelCenter, fracComplete*speed);
 		transform.position += centerPoint;
 		*/
-		if (newPlayer) {
+		if (rotate) {
 			//Rotate ();
 			transform.rotation = Quaternion.Slerp (from.rotation, to.rotation, timeCount);
 			transform.position = Vector3.Slerp (from.position, to.position, timeCount);
 			timeCount += Time.deltaTime;
-			if (transform.rotation == to.rotation) {
-				//newPlayer = false;
+			//check if finished rotating
+			if (Quaternion.Angle(transform.rotation,to.rotation)<Mathf.Epsilon) {
+				rotate = false;
+				timeCount = 0.0f;
+				Debug.Log ("done rotating");
+				if (!bm.gameEnded&&!bm.curPlayer.isManual)
+					StartCoroutine (WaitAI());
 			}
 		}
 	}
 
-	//gets center point
-	public void GetCenter(Vector3 direction){
-		centerPoint = (startPos.position + endPos.position) * .5f;
-		centerPoint -= direction;
-		startRelCenter = startPos.position - centerPoint;
-		endRelCenter = endPos.position - centerPoint;
+	IEnumerator WaitAI(){
+		yield return new WaitForSeconds (1);
+		bm.curPlayer.DoMove();
 	}
 
-	public void Rotate(){
-		while (transform.rotation != to.rotation) {
-			transform.rotation = Quaternion.Slerp (from.rotation, to.rotation, timeCount);
-			transform.position = Vector3.Slerp (from.position, to.position, timeCount);
-			timeCount += Time.deltaTime;
-		}
-	}
 }

@@ -29255,10 +29255,12 @@ MonoBehaviour:
   offset: {x: 0, y: 4, z: 0}
   scale: 2.45
   camControl: {fileID: 1718775878}
+  isRotating: 0
   players:
   - {fileID: 1611183408}
   - {fileID: 738974378}
   - {fileID: 1808885706}
+  boardObject: {fileID: 0}
   playerTurn: 0
   curPlayer: {fileID: 0}
   target: {fileID: 0}
@@ -33379,13 +33381,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb9eed12e65b844787c53c8b34e1fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bm: {fileID: 1511489610}
   from: {fileID: 160972157}
   to: {fileID: 1443188128}
-  newPlayer: 1
-  startPos: {fileID: 0}
-  endPos: {fileID: 0}
-  duration: 1
-  speed: 0
+  rotate: 0
+  isRotating: 0
 --- !u!1 &1721469528
 GameObject:
   m_ObjectHideFlags: 0
