@@ -11,8 +11,8 @@ public class BoardManager : MonoBehaviour {
     public float scale = 1;
 
 	public CameraController camControl;
-	private bool firstTurn = true;
-	public bool isRotating;
+
+	private bool isFirstTurnAndAI = true; // used SPECIFICALLY so that an AI can be start with "space"
 
 	public Player[] players;
 	public GameObject boardObject;
@@ -77,7 +77,7 @@ public class BoardManager : MonoBehaviour {
 		board = new Marble[width, height];
 		//get game mode from playerprefs
 		string gameMode=PlayerPrefs.GetString("Mode");
-		setPlayers(gameMode); //populate players[] list according to mode
+		SetPlayers(gameMode); //populate players[] list according to mode
 
         int playerNum = 0;
         foreach (Player player in players)
@@ -98,13 +98,15 @@ public class BoardManager : MonoBehaviour {
         playerTurn = 0;
         doingMove = false;
         targetToken.SetActive(displayTargetToken);
-        playerTurnText.enabled = true;
 		curPlayer=players [playerTurn % players.Length];
+        isFirstTurnAndAI = !curPlayer.isManual;
+        playerTurnText.enabled = true;
+        UpdatePlayerTurnText();
         ResetNewTurn();
     }
 
 	//populates players array according to game mode (from settings)
-	private void setPlayers(string gameMode){
+	private void SetPlayers(string gameMode){
 		switch (gameMode) {
 		case "AI":
 			players = new Player[2];
@@ -164,8 +166,6 @@ public class BoardManager : MonoBehaviour {
         highlightTile.GetComponent<Renderer>().material = curPlayer.targetMaterial;
         SetTargetTokenPosition(new Vector2Int(-10, -10));
         target = null;
-        playerTurnText.color = curPlayer.targetMaterial.color;
-		playerTurnText.text = "Player " + (playerTurn % players.Length + 1) + "'s Turn";
 
 		//reset camController
 		//camControl.newPlayer = false;
@@ -236,44 +236,65 @@ public class BoardManager : MonoBehaviour {
             SetOutlineMaterial(neutralTargetMaterial);
     }
 
+    private void UpdatePlayerTurnText()
+    {
+        playerTurnText.color = curPlayer.targetMaterial.color;
+        playerTurnText.text = "Player " + ((playerTurn % players.Length) + 1) + "'s Turn";
+    }
+
     private void EndMove()
 	{
-		bool waitBefore=false;
-		if (GetIsWin ()) {
-			curPlayer.hasWon = true;
-			gameEnded = true;
-			curPlayer.winText.enabled = true;
-			//foreach (Player player in players)
-			//    if (player != curPlayer)
-			//        foreach (Marble m in player.pieces)
-			//            //m.gameObject.SetActive(false);
-			//            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
-		}
-		if (!gameEnded)
-			playerTurn++;
-		
-		//rotate camera
-		//get 'from' and 'to' positions, increment player
-		camControl.from = curPlayer.cameraPosition;
-		if (!curPlayer.isManual) {
-			waitBefore = true;
-		}
-		curPlayer = players [playerTurn % players.Length];
-		camControl.to = curPlayer.cameraPosition;
+        //????? - I don't get why I need to put this here, as it gets set in ResetNewTurn, but if I don't include this, the player after the AI will be skipped, so that the AI keeps playing.
+        hasFinishedMove = false;
+        if (isFirstTurnAndAI)
+        {
+            curPlayer.DoMove();
+            isFirstTurnAndAI = false;
+        }
+        else
+        {
+            bool waitBefore = false;
+            if (GetIsWin())
+            {
+                curPlayer.hasWon = true;
+                gameEnded = true;
+                curPlayer.winText.enabled = true;
+                //foreach (Player player in players)
+                //    if (player != curPlayer)
+                //        foreach (Marble m in player.pieces)
+                //            //m.gameObject.SetActive(false);
+                //            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+            }
 
-		//rotate camera
-		if (waitBefore)
-			StartCoroutine (WaitAI ());
-		else
-			camControl.rotate = true;
-        ResetNewTurn();
+            //increment playerTurn
+            if (!gameEnded)
+                playerTurn++;
+            //rotate camera
+            //get 'from' and 'to' positions, increment curPlayer
+            camControl.from = curPlayer.cameraPosition;
+            if (!curPlayer.isManual)
+            {
+                waitBefore = true;
+            }
+            curPlayer = players[playerTurn % players.Length];
+            camControl.to = curPlayer.cameraPosition;
 
+            //rotate camera
+            ResetNewTurn();
+            if (waitBefore)
+                StartCoroutine(WaitAI());
+            else
+            {
+                UpdatePlayerTurnText();
+                camControl.rotate = true;
+            }
+        }
     }
 
 	IEnumerator WaitAI(){
 		yield return new WaitForSeconds (0.8f);
-		isRotating=true;
 		camControl.rotate = true;
+        UpdatePlayerTurnText();
 	}
 
     //// Call this to move the target -- also changes its color and stuff!

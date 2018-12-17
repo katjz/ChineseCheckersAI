@@ -114,14 +114,14 @@ public class AIPlayer : Player {
             List<Vector2Int> jumpMoves = new List<Vector2Int> { marblePos };
             for (int i = 0; i < jumpMoves.Count; i++)
             {
-                Vector2Int curMarblepos = jumpMoves.get(i);
+                Vector2Int curMarblePos = jumpMoves[i];
                 foreach (Vector2Int direction in directionSet)
                     if (BoardManager.IsOnBoard(curMarblePos + direction * 2) &&
                            boardArr[curMarblePos.x + direction.x, curMarblePos.y + direction.y] == true &&
                            boardArr[curMarblePos.x + 2 * direction.x, curMarblePos.y + 2 * direction.y] == false)
                         if (!jumpMoves.Contains(curMarblePos + direction * 2))
                         {
-                            jumpMoves.Add(curMrblePos + direction * 2);
+                            jumpMoves.Add(curMarblePos + direction * 2);
                             validMoves.Add(curMarblePos + direction * 2);
                         }
             }
@@ -175,6 +175,10 @@ public class AIPlayer : Player {
         {
             if (n == 0)
                 return EvaluateBoard(ref doesWin);
+            CheckIfWin(ref doesWin);
+            if (doesWin == true)
+                return 0;
+            // short-circuit if you are going to win in fewer moves!
             float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
             Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
             for(int i=0;i<myPieces.Length;i++)
@@ -202,11 +206,23 @@ public class AIPlayer : Player {
         // NEVER set doesWin to false.
         float EvaluateBoard(ref bool doesWin)
         {
-            if(originalPlayer)
+            CheckIfWin(ref doesWin);
+            return
+                +(0.04f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
+                +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
+                + (0.3f) * (GetHorizontalDeviation(player2Pieces) - GetHorizontalDeviation(player1Pieces));
+                //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
+                //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
+                //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
+        }
+
+        void CheckIfWin(ref bool doesWin)
+        {
+            if (originalPlayer)
             {
                 bool thisIsWin = false;
-                foreach(Vector2Int piece in player1Pieces)
-                    if(piece.y < 13)
+                foreach (Vector2Int piece in player1Pieces)
+                    if (piece.y < 13)
                     {
                         thisIsWin = false;
                         break;
@@ -226,12 +242,6 @@ public class AIPlayer : Player {
                 if (thisIsWin)
                     doesWin = true;
             }
-            return //(0.00f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
-                +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
-                + (0.3f) * (GetHorizontalDeviation(player2Pieces) - GetHorizontalDeviation(player1Pieces));
-                //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
-                //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
-                //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
         }
 
         // the total vertical variance for one player

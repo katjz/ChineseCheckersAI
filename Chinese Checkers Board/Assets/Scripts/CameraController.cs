@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	IEnumerator WaitAI(){
-		yield return new WaitForSeconds (0.6f);
+		yield return new WaitForSeconds (0.2f);
 		bm.curPlayer.DoMove();
 	}
 
