@@ -10,7 +10,8 @@ public class BoardManager : MonoBehaviour {
     public Vector3 offset;
     public float scale = 1;
 
-	public CameraController camera;
+	public CameraController camControl;
+	private bool firstTurn = true;
 
     [HideInInspector]
     public Marble[,] board;
@@ -95,9 +96,21 @@ public class BoardManager : MonoBehaviour {
 
     private void ResetNewTurn()
     {
-        //rotate camera
+		
+		if (!firstTurn) {
+			//get 'from' and 'to' positions, increment player
+			camControl.from = curPlayer.cameraPosition;
+			curPlayer = players [playerTurn % players.Length];
+			camControl.to = curPlayer.cameraPosition;
+			//rotate camera
+			camControl.newPlayer = true;
+			//camControl.Rotate();
+		} else {
+			//Debug.Log ("first turn");
+			curPlayer = players [playerTurn % players.Length];
+			firstTurn = false;
+		}
 
-		curPlayer = players[playerTurn % players.Length];
         // reset the game state:
         hasJumped = false;
         highlightTile.transform.position = new Vector3(100, 4, 50);
@@ -108,7 +121,10 @@ public class BoardManager : MonoBehaviour {
         target = null;
         playerTurnText.color = curPlayer.targetMaterial.color;
         playerTurnText.text = playerTurnString + (playerTurn % players.Length);
-    }
+
+		//reset camController
+		//camControl.newPlayer = false;
+	}
 
     // Update is called once per frame
     void Update()

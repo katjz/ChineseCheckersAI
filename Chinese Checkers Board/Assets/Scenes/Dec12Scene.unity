@@ -2923,7 +2923,7 @@ MonoBehaviour:
   - {fileID: 2052789854}
   - {fileID: 1516239845}
   - {fileID: 1718675591}
-  targetMaterial: {fileID: 2100000, guid: 5cebb60d3fa704d45831e0deb76829d6, type: 2}
+  targetMaterial: {fileID: 2100000, guid: cebf5ffe891438c4eb7fa4347d32fe6b, type: 2}
   winningSquares:
   - {x: 8, y: 0}
   - {x: 7, y: 1}
@@ -4805,7 +4805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.34117648, g: 1, b: 0.57254905, a: 1}
+  m_Color: {r: 0.46274513, g: 0.45098042, b: 0.9490197, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5397,7 +5397,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.53333336, g: 0.38823533, b: 0.97647065, a: 1}
+  m_Color: {r: 0.56078434, g: 0.9568628, b: 0.5529412, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -9775,7 +9775,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &507787313
 Transform:
   m_ObjectHideFlags: 0
@@ -9839,7 +9839,7 @@ MonoBehaviour:
   hasWon: 0
   winText: {fileID: 252886601}
   cameraPosition: {fileID: 1443188128}
-  numFutureTurnsCalculated: 1
+  numFutureTurnsCalculated: 2
 --- !u!1 &508714593
 GameObject:
   m_ObjectHideFlags: 0
@@ -12969,7 +12969,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &650457607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14552,7 +14552,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &738974377
 Transform:
   m_ObjectHideFlags: 0
@@ -29254,10 +29254,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 4, z: 0}
   scale: 2.45
-  camera: {fileID: 1718775878}
+  camControl: {fileID: 1718775878}
   players:
-  - {fileID: 650457607}
-  - {fileID: 507787314}
+  - {fileID: 1611183408}
+  - {fileID: 738974378}
+  - {fileID: 1808885706}
   playerTurn: 0
   curPlayer: {fileID: 0}
   target: {fileID: 0}
@@ -30837,7 +30838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1611183407
 Transform:
   m_ObjectHideFlags: 0
@@ -33302,7 +33303,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1718775877}
   - component: {fileID: 1718775876}
-  - component: {fileID: 1718775875}
   - component: {fileID: 1718775878}
   m_Layer: 0
   m_Name: Main Camera
@@ -33311,14 +33311,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1718775875
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1718775874}
-  m_Enabled: 1
 --- !u!20 &1718775876
 Camera:
   m_ObjectHideFlags: 0
@@ -33368,13 +33360,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1718775874}
-  m_LocalRotation: {x: 0.4653151, y: 0.42169574, z: -0.26864982, w: 0.7303984}
-  m_LocalPosition: {x: -2, y: 38, z: 7}
+  m_LocalRotation: {x: 0.53729963, y: 0, z: 0, w: 0.8433915}
+  m_LocalPosition: {x: 13, y: 38, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 747840853}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 65, y: 60, z: 0}
+  m_LocalEulerAnglesHint: {x: 65, y: 0, z: 0}
 --- !u!114 &1718775878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33387,6 +33379,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb9eed12e65b844787c53c8b34e1fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  from: {fileID: 160972157}
+  to: {fileID: 1443188128}
+  newPlayer: 1
+  startPos: {fileID: 0}
+  endPos: {fileID: 0}
+  duration: 1
+  speed: 0
 --- !u!1 &1721469528
 GameObject:
   m_ObjectHideFlags: 0
@@ -35580,7 +35579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1808885705
 Transform:
   m_ObjectHideFlags: 0
@@ -35629,7 +35628,7 @@ MonoBehaviour:
   - {fileID: 192250794}
   - {fileID: 1297454380}
   - {fileID: 325277312}
-  targetMaterial: {fileID: 2100000, guid: cebf5ffe891438c4eb7fa4347d32fe6b, type: 2}
+  targetMaterial: {fileID: 2100000, guid: 5cebb60d3fa704d45831e0deb76829d6, type: 2}
   winningSquares:
   - {x: 24, y: 4}
   - {x: 22, y: 4}
