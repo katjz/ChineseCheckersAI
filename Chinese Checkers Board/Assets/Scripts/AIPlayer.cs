@@ -113,15 +113,18 @@ public class AIPlayer : Player {
             // if we are "jumping" the marble:
             List<Vector2Int> jumpMoves = new List<Vector2Int> { marblePos };
             for (int i = 0; i < jumpMoves.Count; i++)
+            {
+                Vector2Int curMarblepos = jumpMoves.get(i);
                 foreach (Vector2Int direction in directionSet)
-                    if (BoardManager.IsOnBoard(marblePos + direction * 2) && 
-                           boardArr[marblePos.x+direction.x, marblePos.y+direction.y]==true &&
-                           boardArr[marblePos.x + 2 * direction.x, marblePos.y + 2 * direction.y] == false)
-                        if (!jumpMoves.Contains(marblePos + direction * 2))
+                    if (BoardManager.IsOnBoard(curMarblePos + direction * 2) &&
+                           boardArr[curMarblePos.x + direction.x, curMarblePos.y + direction.y] == true &&
+                           boardArr[curMarblePos.x + 2 * direction.x, curMarblePos.y + 2 * direction.y] == false)
+                        if (!jumpMoves.Contains(curMarblePos + direction * 2))
                         {
-                            jumpMoves.Add(marblePos + direction * 2);
-                            validMoves.Add(marblePos + direction * 2);
+                            jumpMoves.Add(curMrblePos + direction * 2);
+                            validMoves.Add(curMarblePos + direction * 2);
                         }
+            }
 
             Vector2Int[] ret = new Vector2Int[validMoves.Count];
             validMoves.CopyTo(ret);
