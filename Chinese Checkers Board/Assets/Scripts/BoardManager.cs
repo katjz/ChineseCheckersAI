@@ -13,9 +13,10 @@ public class BoardManager : MonoBehaviour {
 	public CameraController camControl;
 	private bool firstTurn = true;
 
+	public Player[] players;
+
     [HideInInspector]
     public Marble[,] board;
-    public Player[] players;
     // an int that corresponds to the current turn number
     // use % to get whose turn it is.
     [HideInInspector]
@@ -70,6 +71,9 @@ public class BoardManager : MonoBehaviour {
     void Start()
     {
         board = new Marble[width, height];
+		//get game mode from playerprefs
+		string gameMode=PlayerPrefs.GetString("Mode");
+		setPlayers(gameMode); //populate players[] list according to mode
 
         int playerNum = 0;
         foreach (Player player in players)
@@ -93,6 +97,54 @@ public class BoardManager : MonoBehaviour {
         playerTurnText.enabled = true;
         ResetNewTurn();
     }
+
+	//populates players array according to game mode (from settings)
+	private void setPlayers(string gameMode){
+		switch (gameMode) {
+		case "AI":
+			players = new Player[2];
+			players [0] = GameObject.Find ("Player1AI").GetComponent<AIPlayer> ();			
+			players [1] = GameObject.Find ("Player4AI").GetComponent<AIPlayer> ();
+			break;
+		case "PAI":
+			players = new Player[2];
+			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player4AI").GetComponent<AIPlayer>();
+			break;
+		case "2P":
+			players = new Player[2];
+			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player4New").GetComponent<Player>();
+			break;
+		case "3P":
+			players = new Player[3];
+			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player3New").GetComponent<Player>();		
+			players[1]=GameObject.Find("Player5New").GetComponent<Player>();
+			break;
+		case "6P":
+			players = new Player[6];
+			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player2New").GetComponent<Player>();		
+			players[1]=GameObject.Find("Player3New").GetComponent<Player>();
+			players[0]=GameObject.Find("Player4New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player5New").GetComponent<Player>();		
+			players[1]=GameObject.Find("Player6New").GetComponent<Player>();
+			break;
+		default:
+			players = new Player[2];
+			players[0]=GameObject.Find("Player1New").GetComponent<Player>();			
+			players[1]=GameObject.Find("Player4New").GetComponent<Player>();
+			break;
+		}
+
+		//activate all necessary players
+		foreach (Player p in players) {
+			p.gameObject.SetActive(true);
+		}
+			
+		//return players;
+	}
 
     private void ResetNewTurn()
     {
