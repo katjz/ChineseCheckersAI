@@ -165,7 +165,7 @@ public class BoardManager : MonoBehaviour {
         SetTargetTokenPosition(new Vector2Int(-10, -10));
         target = null;
         playerTurnText.color = curPlayer.targetMaterial.color;
-		playerTurnText.text = "Player " + ((playerTurn + 1) % players.Length) + "'s Turn";
+		playerTurnText.text = "Player " + (playerTurn % players.Length + 1) + "'s Turn";
 
 		//reset camController
 		//camControl.newPlayer = false;

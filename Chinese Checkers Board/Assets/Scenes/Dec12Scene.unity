@@ -1540,7 +1540,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &64056632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,7 +2064,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &108699346
 GameObject:
   m_ObjectHideFlags: 0
@@ -2175,7 +2173,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &112456880
 GameObject:
   m_ObjectHideFlags: 0
@@ -2609,7 +2606,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &125252359
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,7 +3210,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &160972156
 GameObject:
   m_ObjectHideFlags: 0
@@ -3285,7 +3280,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &170951584
 GameObject:
   m_ObjectHideFlags: 0
@@ -3476,7 +3470,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &194913172
 GameObject:
   m_ObjectHideFlags: 0
@@ -3623,7 +3616,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &196650432
 GameObject:
   m_ObjectHideFlags: 0
@@ -3814,7 +3806,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &210371454
 GameObject:
   m_ObjectHideFlags: 0
@@ -4368,7 +4359,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &229294584
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4644,7 +4634,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &248920925 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -4673,7 +4662,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &250801254
 GameObject:
   m_ObjectHideFlags: 0
@@ -5702,7 +5690,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &306613430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6220,7 +6207,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &320203003
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6576,7 +6562,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &325849163 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -6605,7 +6590,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &327511549
 GameObject:
   m_ObjectHideFlags: 0
@@ -6715,7 +6699,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &328507352 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -6744,7 +6727,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &333245082
 GameObject:
   m_ObjectHideFlags: 0
@@ -7509,7 +7491,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &375941733
 GameObject:
   m_ObjectHideFlags: 0
@@ -8033,7 +8014,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &407702815
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8441,7 +8421,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &436134106 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -8470,7 +8449,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &438081493
 GameObject:
   m_ObjectHideFlags: 0
@@ -8580,7 +8558,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &444368793
 GameObject:
   m_ObjectHideFlags: 0
@@ -9424,7 +9401,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &499961375
 GameObject:
   m_ObjectHideFlags: 0
@@ -9839,7 +9815,7 @@ MonoBehaviour:
   hasWon: 0
   winText: {fileID: 252886601}
   cameraPosition: {fileID: 1443188128}
-  numFutureTurnsCalculated: 2
+  numFutureTurnsCalculated: 3
 --- !u!1 &508714593
 GameObject:
   m_ObjectHideFlags: 0
@@ -10288,7 +10264,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &521816151
 GameObject:
   m_ObjectHideFlags: 0
@@ -11424,7 +11399,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &564430247
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12267,7 +12241,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &615456817
 GameObject:
   m_ObjectHideFlags: 0
@@ -12785,7 +12758,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &646771256
 GameObject:
   m_ObjectHideFlags: 0
@@ -13009,7 +12981,7 @@ MonoBehaviour:
   hasWon: 0
   winText: {fileID: 1580961547}
   cameraPosition: {fileID: 160972157}
-  numFutureTurnsCalculated: 1
+  numFutureTurnsCalculated: 3
 --- !u!4 &650457608
 Transform:
   m_ObjectHideFlags: 0
@@ -13724,7 +13696,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &682600552
 GameObject:
   m_ObjectHideFlags: 0
@@ -14081,7 +14052,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &711351478
 GameObject:
   m_ObjectHideFlags: 0
@@ -15177,7 +15147,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &766553460
 GameObject:
   m_ObjectHideFlags: 0
@@ -15287,7 +15256,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &771531651
 GameObject:
   m_ObjectHideFlags: 0
@@ -15478,7 +15446,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &782271722
 GameObject:
   m_ObjectHideFlags: 0
@@ -15846,7 +15813,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &795308178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16202,7 +16168,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &808005841
 GameObject:
   m_ObjectHideFlags: 0
@@ -17124,7 +17089,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &850544389
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18191,7 +18155,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &887442388
 GameObject:
   m_ObjectHideFlags: 0
@@ -18301,7 +18264,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &890128570
 GameObject:
   m_ObjectHideFlags: 0
@@ -18663,7 +18625,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &914656268
 GameObject:
   m_ObjectHideFlags: 0
@@ -19712,7 +19673,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &960023114 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -19741,7 +19701,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &962672552
 GameObject:
   m_ObjectHideFlags: 0
@@ -19856,7 +19815,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &972083985
 GameObject:
   m_ObjectHideFlags: 0
@@ -20791,7 +20749,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1012919288
 GameObject:
   m_ObjectHideFlags: 0
@@ -21562,7 +21519,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1075783538
 GameObject:
   m_ObjectHideFlags: 0
@@ -21672,7 +21628,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1081715766
 GameObject:
   m_ObjectHideFlags: 0
@@ -22359,7 +22314,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1119695640
 GameObject:
   m_ObjectHideFlags: 0
@@ -22819,7 +22773,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1143253455
 GameObject:
   m_ObjectHideFlags: 0
@@ -23096,7 +23049,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1167923736
 GameObject:
   m_ObjectHideFlags: 0
@@ -23292,7 +23244,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1181603468
 GameObject:
   m_ObjectHideFlags: 0
@@ -23402,7 +23353,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1189637994
 GameObject:
   m_ObjectHideFlags: 0
@@ -23679,7 +23629,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &1196841402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23950,7 +23899,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1202693615 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -23979,7 +23927,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1204078170
 GameObject:
   m_ObjectHideFlags: 0
@@ -25416,7 +25363,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1299075010
 GameObject:
   m_ObjectHideFlags: 0
@@ -25531,7 +25477,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &1313337889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27860,7 +27805,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1424610474 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -27889,7 +27833,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1425274683
 GameObject:
   m_ObjectHideFlags: 0
@@ -28080,7 +28023,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1429991410
 GameObject:
   m_ObjectHideFlags: 0
@@ -28190,7 +28132,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1443188127
 GameObject:
   m_ObjectHideFlags: 0
@@ -28335,7 +28276,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1452009068 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -28364,7 +28304,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &1458899859
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28635,7 +28574,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1487910085
 GameObject:
   m_ObjectHideFlags: 0
@@ -28745,7 +28683,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1495851680
 GameObject:
   m_ObjectHideFlags: 0
@@ -28941,7 +28878,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1499266475
 GameObject:
   m_ObjectHideFlags: 0
@@ -29218,7 +29154,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1511489609
 GameObject:
   m_ObjectHideFlags: 0
@@ -29412,7 +29347,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1526393426
 GameObject:
   m_ObjectHideFlags: 0
@@ -29516,7 +29450,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!4 &1529872451 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4853487487337810, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -32002,7 +31935,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1663885506
 GameObject:
   m_ObjectHideFlags: 0
@@ -32526,7 +32458,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &1686126285
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33294,7 +33225,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1718775874
 GameObject:
   m_ObjectHideFlags: 0
@@ -33738,7 +33668,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1736325296 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -33767,7 +33696,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1743308519
 GameObject:
   m_ObjectHideFlags: 0
@@ -35672,7 +35600,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1811059894 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -35701,7 +35628,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1812898319
 GameObject:
   m_ObjectHideFlags: 0
@@ -36921,7 +36847,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1001 &1869618185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37357,7 +37282,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &1887979319
 GameObject:
   m_ObjectHideFlags: 0
@@ -39306,7 +39230,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &2052789852 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1708916378115544, guid: ec937f5af9f624e6cb176f1b25f5f954,
@@ -39335,7 +39258,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &2064451731
 GameObject:
   m_ObjectHideFlags: 0
@@ -40107,7 +40029,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &2107766616
 GameObject:
   m_ObjectHideFlags: 0
@@ -40717,7 +40638,6 @@ MonoBehaviour:
   bm: {fileID: 0}
   player: {fileID: 0}
   targettoken: {fileID: 280571289}
-  click: 0
 --- !u!1 &2131550111
 GameObject:
   m_ObjectHideFlags: 0

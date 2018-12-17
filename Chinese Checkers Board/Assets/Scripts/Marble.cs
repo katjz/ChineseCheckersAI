@@ -12,7 +12,6 @@ public class Marble : MonoBehaviour {
     public Player player;
     public GameObject targettoken;
     [HideInInspector]
-    public bool click = false; // to check if the player just clicked the marble
     
 	// Use this for initialization
 	void Start () {
@@ -140,7 +139,7 @@ public void OnMouseDown()
         if (bm==null)
             return;
         bm.overboard = bm.overboard - 1;
-        click = false;
+        //click = false;
     }
 
     public void SetLocation()
