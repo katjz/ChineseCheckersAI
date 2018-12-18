@@ -145,7 +145,7 @@ public void OnMouseDown()
     public void SetLocation()
     {
         transform.localPosition = bm.GetWorldLocation(bPos);
-        transform.position += new Vector3(0, 2.0f, 0);
+        transform.position += new Vector3(0, 1.0f, 0);
     }
 
     public bool IsInWinningSquares()

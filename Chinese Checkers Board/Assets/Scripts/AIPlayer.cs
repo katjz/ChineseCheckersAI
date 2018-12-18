@@ -213,17 +213,18 @@ public class AIPlayer : Player {
             return
                 +(0.04f) * (-Mathf.Sqrt(GetVerticalVariance(player1Pieces)) + Mathf.Sqrt(GetVerticalVariance(player2Pieces)))
                 +(4.0f) * (GetAverageVertical(player1Pieces) + GetAverageVertical(player2Pieces))
-                + (0.3f) * (GetHorizontalDeviation(player2Pieces) - GetHorizontalDeviation(player1Pieces));
-                //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
-                //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
-                //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
+                + (0.3f) * (GetHorizontalDeviation(player2Pieces) - GetHorizontalDeviation(player1Pieces))
+                +(1.0f) * (GetProblemSpot(player2Pieces, false) - GetProblemSpot(player1Pieces, true));
+            //+ (0.01f) * (-GetHorizontalVariance(player1Pieces) + GetHorizontalVariance(player2Pieces))
+            //+ (0.0f) * (GetMaximumVertical(player1Pieces) + GetMinimumVertical(player2Pieces))
+            //+ (0.0f) * (-GetMinimumVertical(player1Pieces) - GetMaximumVertical(player2Pieces));
         }
 
         void CheckIfWin(ref bool doesWin)
         {
             if (originalPlayer)
             {
-                bool thisIsWin = false;
+                bool thisIsWin = true;
                 foreach (Vector2Int piece in player1Pieces)
                     if (piece.y < 13)
                     {
@@ -235,15 +236,18 @@ public class AIPlayer : Player {
             }
             else
             {
-                bool thisIsWin = false;
-                foreach (Vector2Int piece in player1Pieces)
+                bool thisIsWin = true;
+                foreach (Vector2Int piece in player2Pieces)
                     if (piece.y > 3)
                     {
                         thisIsWin = false;
                         break;
                     }
                 if (thisIsWin)
+                {
                     doesWin = true;
+                    Debug.Log("meh");
+                }
             }
         }
 
@@ -308,6 +312,18 @@ public class AIPlayer : Player {
                 if (piece.y < ret)
                     ret = piece.y;
             return ret;
+        }
+        
+        // returns 1 if there is a piece at the one bad spot of the board - 0 otherwise.
+        float GetProblemSpot(Vector2Int[] playerPieces, bool player)
+        {
+            Vector2Int problemSpot = player ? new Vector2Int(12, 12) : new Vector2Int(12, 4);
+            foreach (Vector2Int piece in playerPieces)
+            {
+                if (piece == problemSpot)
+                    return 1;
+            }
+            return 0;
         }
     }
 
