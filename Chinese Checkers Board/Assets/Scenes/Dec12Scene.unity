@@ -2919,7 +2919,7 @@ MonoBehaviour:
   - {fileID: 2052789854}
   - {fileID: 1516239845}
   - {fileID: 1718675591}
-  targetMaterial: {fileID: 2100000, guid: cebf5ffe891438c4eb7fa4347d32fe6b, type: 2}
+  targetMaterial: {fileID: 2100000, guid: 5cebb60d3fa704d45831e0deb76829d6, type: 2}
   winningSquares:
   - {x: 8, y: 0}
   - {x: 7, y: 1}
@@ -9907,7 +9907,7 @@ MonoBehaviour:
   - {fileID: 2047683947}
   - {fileID: 327873818}
   - {fileID: 912255970}
-  targetMaterial: {fileID: 2100000, guid: cebf5ffe891438c4eb7fa4347d32fe6b, type: 2}
+  targetMaterial: {fileID: 2100000, guid: 5cebb60d3fa704d45831e0deb76829d6, type: 2}
   winningSquares:
   - {x: 12, y: 0}
   - {x: 11, y: 1}
@@ -36578,7 +36578,7 @@ MonoBehaviour:
   - {fileID: 192250794}
   - {fileID: 1297454380}
   - {fileID: 325277312}
-  targetMaterial: {fileID: 2100000, guid: 5cebb60d3fa704d45831e0deb76829d6, type: 2}
+  targetMaterial: {fileID: 2100000, guid: cebf5ffe891438c4eb7fa4347d32fe6b, type: 2}
   winningSquares:
   - {x: 24, y: 4}
   - {x: 22, y: 4}
