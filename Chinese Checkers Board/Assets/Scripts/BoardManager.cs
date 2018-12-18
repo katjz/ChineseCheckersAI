@@ -277,11 +277,11 @@ public class BoardManager : MonoBehaviour {
                 curPlayer.hasWon = true;
                 gameEnded = true;
                 curPlayer.winText.enabled = true;
-                //foreach (Player player in players)
-                //    if (player != curPlayer)
-                //        foreach (Marble m in player.pieces)
-                //            //m.gameObject.SetActive(false);
-                //            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+                foreach (Player player in players)
+                    if (player != curPlayer)
+                        foreach (Marble m in player.pieces)
+                            //m.gameObject.SetActive(false);
+                            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
             }
 
             //increment playerTurn
