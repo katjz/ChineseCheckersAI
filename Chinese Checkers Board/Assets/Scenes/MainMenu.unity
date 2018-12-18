@@ -1043,9 +1043,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 264140142}
+  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
+  sfx: 1
 --- !u!1 &377167614
 GameObject:
   m_ObjectHideFlags: 0
@@ -3667,9 +3669,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
+  isManager: 1
   toggleText: 
   rotate: 1
   target: 0
+  sfx: 1
 --- !u!1 &965191652
 GameObject:
   m_ObjectHideFlags: 0
@@ -4678,12 +4682,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1593820531}
-        m_MethodName: 
+      - m_Target: {fileID: 1593820536}
+        m_MethodName: toggleSFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4740,10 +4744,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1127c9b9ccebe649b18da61d1f6ba4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 0}
+  button: {fileID: 1593820531}
+  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
+  sfx: 1
 --- !u!1 &1599937546
 GameObject:
   m_ObjectHideFlags: 0
@@ -5668,9 +5674,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1866326922}
+  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
+  sfx: 1
 --- !u!1 &1874905520
 GameObject:
   m_ObjectHideFlags: 0
