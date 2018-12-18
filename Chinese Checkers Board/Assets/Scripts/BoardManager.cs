@@ -280,9 +280,7 @@ public class BoardManager : MonoBehaviour {
                 foreach (Player player in players)
                     if (player != curPlayer)
                         foreach (Marble m in player.pieces)
-                        {
                             //m.gameObject.SetActive(false);
-<<<<<<< HEAD
                             m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
             	//activate buttons to restart/exit game
 				GameObject canvas=GameObject.Find("Canvas");
@@ -293,12 +291,6 @@ public class BoardManager : MonoBehaviour {
 				button = canvas.transform.Find ("ExitButton").gameObject;
 				button.SetActive (true);
 			}
-=======
-                            m.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-                            m.gameObject.transform.position += new Vector3(0, 5.0f, 0);
-                        }
-            }
->>>>>>> parent of e079e05... Revert "Made end animation more dramatic"
 
             //increment playerTurn
             if (!gameEnded)
