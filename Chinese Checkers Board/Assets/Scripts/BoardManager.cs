@@ -282,7 +282,15 @@ public class BoardManager : MonoBehaviour {
                         foreach (Marble m in player.pieces)
                             //m.gameObject.SetActive(false);
                             m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
-            }
+            	//activate buttons to restart/exit game
+				GameObject canvas=GameObject.Find("Canvas");
+				GameObject button = canvas.transform.Find ("RestartButton").gameObject;
+				button.SetActive (true);
+				button = canvas.transform.Find ("MenuButton").gameObject;
+				button.SetActive (true);
+				button = canvas.transform.Find ("ExitButton").gameObject;
+				button.SetActive (true);
+			}
 
             //increment playerTurn
             if (!gameEnded)
