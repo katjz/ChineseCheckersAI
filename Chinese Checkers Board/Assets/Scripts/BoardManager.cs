@@ -11,7 +11,8 @@ public class BoardManager : MonoBehaviour {
     public float scale = 1;
 
 	public CameraController camControl;
-	public bool camRotate;
+	public bool camRotate=true;
+	public float waitTime=1.4f;
 
 	private bool isFirstTurnAndAI = true; // used SPECIFICALLY so that an AI can be start with "space"
 
@@ -85,7 +86,18 @@ public class BoardManager : MonoBehaviour {
 			camRotate = true;
 		else
 			camRotate = false;
-		
+
+		//get AI speed preferences
+		if (PlayerPrefs.GetInt ("Speed") == 2) {
+			waitTime = 0.2f;
+		} else if (PlayerPrefs.GetInt ("Speed" ) == 1) {
+			waitTime = 0.8f;
+		} else {
+			waitTime = 1.4f;
+		}
+		Debug.Log ("AI wait: " + waitTime);
+
+
         int playerNum = 0;
         foreach (Player player in players)
         {
@@ -287,10 +299,10 @@ public class BoardManager : MonoBehaviour {
 				camControl.to = curPlayer.cameraPosition;
 				//rotate camera
 				ResetNewTurn ();
-                StartCoroutine(WaitAI(waitBefore ? 0.8f : 0.2f, true));
+				StartCoroutine(WaitAI(waitBefore ? waitTime/2 : waitTime, true));
 			} else {
 				curPlayer = players [playerTurn % players.Length];
-                StartCoroutine(WaitAI(waitBefore ? 0.0f : 0.0f, false));
+                StartCoroutine(WaitAI(waitBefore ? waitTime/2 : waitTime, false));
             }
         }
     }
