@@ -1,6 +1,6 @@
 # ChineseCheckersAI
 CS241 Final Project (2018)
-Authors: Liam Axon, Katja Zoner, Peng Gu, Yifan Chen
+Authors: Liam Axon, Katja Zoner, Peng Gu
 
 Our entire project is within the Chinese Checkers Board folder. The other files are previous stages or part of our project.
 
