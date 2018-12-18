@@ -277,11 +277,14 @@ public class BoardManager : MonoBehaviour {
                 curPlayer.hasWon = true;
                 gameEnded = true;
                 curPlayer.winText.enabled = true;
-                foreach (Player player in players)
-                    if (player != curPlayer)
-                        foreach (Marble m in player.pieces)
+				foreach (Player player in players)
+					if (player != curPlayer)
+						foreach (Marble m in player.pieces) {
+							m.gameObject.GetComponent<Rigidbody> ().velocity = new Vector3 (0, 0, 0);
+							m.gameObject.transform.position += new Vector3 (0, 5.0f, 0);
+						}
                             //m.gameObject.SetActive(false);
-                            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+
             	//activate buttons to restart/exit game
 				GameObject canvas=GameObject.Find("Canvas");
 				GameObject button = canvas.transform.Find ("RestartButton").gameObject;
