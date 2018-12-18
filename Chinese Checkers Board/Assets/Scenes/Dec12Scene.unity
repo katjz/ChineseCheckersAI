@@ -9815,7 +9815,7 @@ MonoBehaviour:
   hasWon: 0
   winText: {fileID: 252886601}
   cameraPosition: {fileID: 1443188128}
-  numFutureTurnsCalculated: 3
+  numFutureTurnsCalculated: 2
   priorWeight: 0.7
 --- !u!1 &508714593
 GameObject:
@@ -12982,7 +12982,7 @@ MonoBehaviour:
   hasWon: 0
   winText: {fileID: 1580961547}
   cameraPosition: {fileID: 160972157}
-  numFutureTurnsCalculated: 3
+  numFutureTurnsCalculated: 2
   priorWeight: 0.7
 --- !u!4 &650457608
 Transform:
@@ -29193,6 +29193,7 @@ MonoBehaviour:
   scale: 2.45
   camControl: {fileID: 1718775878}
   camRotate: 0
+  waitTime: 1.4
   players:
   - {fileID: 1611183408}
   - {fileID: 738974378}

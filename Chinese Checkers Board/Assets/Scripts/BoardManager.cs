@@ -89,9 +89,9 @@ public class BoardManager : MonoBehaviour {
 
 		//get AI speed preferences
 		if (PlayerPrefs.GetInt ("Speed") == 2) {
-			waitTime = 0.2f;
+			waitTime = 0.06f;
 		} else if (PlayerPrefs.GetInt ("Speed" ) == 1) {
-			waitTime = 0.8f;
+			waitTime = 0.6f;
 		} else {
 			waitTime = 1.4f;
 		}
