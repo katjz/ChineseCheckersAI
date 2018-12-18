@@ -11,6 +11,7 @@ public class BoardManager : MonoBehaviour {
     public float scale = 1;
 
 	public CameraController camControl;
+	public bool camRotate;
 
 	private bool isFirstTurnAndAI = true; // used SPECIFICALLY so that an AI can be start with "space"
 
@@ -79,6 +80,12 @@ public class BoardManager : MonoBehaviour {
 		string gameMode=PlayerPrefs.GetString("Mode");
 		SetPlayers(gameMode); //populate players[] list according to mode
 
+		//get camera rotation preferences
+		if (PlayerPrefs.GetInt ("CamRotate") == 1)
+			camRotate = true;
+		else
+			camRotate = false;
+		
         int playerNum = 0;
         foreach (Player player in players)
         {
@@ -271,23 +278,28 @@ public class BoardManager : MonoBehaviour {
                 playerTurn++;
             //rotate camera
             //get 'from' and 'to' positions, increment curPlayer
-            camControl.from = curPlayer.cameraPosition;
-            if (!curPlayer.isManual)
-            {
-                waitBefore = true;
-            }
-            curPlayer = players[playerTurn % players.Length];
-            camControl.to = curPlayer.cameraPosition;
-
-            //rotate camera
-            ResetNewTurn();
-            if (waitBefore)
-                StartCoroutine(WaitAI());
-            else
-            {
-                UpdatePlayerTurnText();
-                camControl.rotate = true;
-            }
+			if (camRotate) {
+				camControl.from = curPlayer.cameraPosition;
+				if (!curPlayer.isManual) {
+					waitBefore = true;
+				}
+				curPlayer = players [playerTurn % players.Length];
+				camControl.to = curPlayer.cameraPosition;
+				//rotate camera
+				ResetNewTurn ();
+				if (waitBefore)
+					StartCoroutine (WaitAI ());
+				else {
+					UpdatePlayerTurnText ();
+					camControl.rotate = true;
+				}
+			} else {
+				curPlayer = players [playerTurn % players.Length];
+				ResetNewTurn ();
+				UpdatePlayerTurnText ();
+				if (!gameEnded && !curPlayer.isManual)
+					curPlayer.DoMove ();
+			}
         }
     }
 
