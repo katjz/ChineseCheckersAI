@@ -611,10 +611,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 2
-  cloudProjectId: b17a8395-b774-430c-8262-0f84ac660276
+  cloudProjectId: 2b71dd3c-b170-45d0-b7d6-f452e9f9001d
   framebufferDepthMemorylessMode: 0
   projectName: Chinese Checkers Board
-  organizationId: mondegreen
+  organizationId: kzoner
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
