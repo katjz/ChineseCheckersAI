@@ -280,8 +280,11 @@ public class BoardManager : MonoBehaviour {
                 foreach (Player player in players)
                     if (player != curPlayer)
                         foreach (Marble m in player.pieces)
+                        {
                             //m.gameObject.SetActive(false);
-                            m.gameObject.transform.position += new Vector3(0, 1.0f, 0);
+                            m.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+                            m.gameObject.transform.position += new Vector3(0, 5.0f, 0);
+                        }
             }
 
             //increment playerTurn
