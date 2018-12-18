@@ -822,7 +822,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -1063,7 +1062,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 264140142}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -1139,7 +1137,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: On
+  m_Text: Off
 --- !u!222 &377167617
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1891,7 +1889,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -1910,7 +1907,7 @@ GameObject:
   - component: {fileID: 515617166}
   - component: {fileID: 515617168}
   m_Layer: 5
-  m_Name: Menu Panel
+  m_Name: Button Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2348,7 +2345,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -3135,7 +3131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -3909,7 +3904,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 1
   toggleText: 
   rotate: 1
   target: 0
@@ -4986,8 +4980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1593820531}
-  isManager: 0
-  toggleText: 
+  toggleText: Off
   rotate: 1
   target: 0
   sfx: 1
@@ -5916,7 +5909,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1866326922}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -6275,7 +6267,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1988502684}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
@@ -6539,7 +6530,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  isManager: 0
   toggleText: 
   rotate: 1
   target: 0
