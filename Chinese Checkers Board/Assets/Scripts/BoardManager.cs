@@ -290,7 +290,7 @@ public class BoardManager : MonoBehaviour {
                 StartCoroutine(WaitAI(waitBefore ? 0.8f : 0.2f, true));
 			} else {
 				curPlayer = players [playerTurn % players.Length];
-                StartCoroutine(WaitAI(waitBefore ? 0.8f : 0.2f, false));
+                StartCoroutine(WaitAI(waitBefore ? 0.0f : 0.0f, false));
             }
         }
     }
