@@ -6,6 +6,7 @@ using UnityEngine;
 // IN THE FOLLOWING CODE: player1 is the bottom player, and player2 is the top player.
 public class AIPlayer : Player {
     public int numFutureTurnsCalculated;
+    public float priorWeight; // a number between 0.0 and 1.0 that determines the weight assigned to first moves. Vanilla version - set to 1.0
 
 	// Use this for initialization
 	void Start () {
@@ -23,7 +24,7 @@ public class AIPlayer : Player {
         VBoard internalVBoard = new VBoard(bm, playerNumber);
         Vector3Int bestMove = new Vector3Int(-1, -1, -1);
         bool doesWin = false;
-        bestMove = internalVBoard.PickMove(numFutureTurnsCalculated, ref doesWin);
+        bestMove = internalVBoard.PickMove(numFutureTurnsCalculated, priorWeight, ref doesWin);
         // now, if the player does win, we have to make them win in the least number of possible moves.
         Debug.Log("Does Win? " + doesWin);
         if(!doesWin)
@@ -31,7 +32,7 @@ public class AIPlayer : Player {
             for (int i = numFutureTurnsCalculated-1; i >= 0; i--)
             {
                 doesWin = false;
-                Vector3Int newBestMove = internalVBoard.PickMove(numFutureTurnsCalculated, ref doesWin);
+                Vector3Int newBestMove = internalVBoard.PickMove(i, priorWeight, ref doesWin);
                 if (!doesWin)
                     break;
                 else
@@ -136,7 +137,7 @@ public class AIPlayer : Player {
         // id of the marble to move, and the second and third coordinates are the new position.
         // if the first coordinate is negative, an error has occured.
         // just like with EvaluateBoard(int), we maximize iff we are player1
-        public Vector3Int PickMove(int n, ref bool doesWin)
+        public Vector3Int PickMove(int n, float priorWeight, ref bool doesWin)
         {
             Vector3Int ret = new Vector3Int(-1, -1, -1);
             if (n == 0)
@@ -156,7 +157,7 @@ public class AIPlayer : Player {
                     newBoard.boardArr[piece.x, piece.y] = false;
                     newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
                     (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n-1, ref doesWin);
+                    float newValue = newBoard.EvaluateBoard(n-1, priorWeight, ref doesWin);
                     if (doesWin || (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue)))
                     {
                         ret = new Vector3Int(i, moveToPos.x, moveToPos.y);
@@ -164,6 +165,7 @@ public class AIPlayer : Player {
                     }
                 }
             }
+
             Debug.Log("Optimal Value: " + optimalValue);
             return ret;
         }
@@ -171,7 +173,7 @@ public class AIPlayer : Player {
         // evaluates the board from player1's perspective
         // we maximize iff curPlayer is true
         // doesn't work if n<0!
-        float EvaluateBoard(int n, ref bool doesWin)
+        float EvaluateBoard(int n, float priorWeight, ref bool doesWin)
         {
             if (n == 0)
                 return EvaluateBoard(ref doesWin);
@@ -179,7 +181,7 @@ public class AIPlayer : Player {
             if (doesWin == true)
                 return 0;
             // short-circuit if you are going to win in fewer moves!
-            float ret = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
+            float optimalValue = curPlayer ? Mathf.NegativeInfinity : Mathf.Infinity;
             Vector2Int[] myPieces = curPlayer ? player1Pieces : player2Pieces;
             for(int i=0;i<myPieces.Length;i++)
             {
@@ -194,12 +196,13 @@ public class AIPlayer : Player {
                     newBoard.boardArr[piece.x, piece.y] = false;
                     newBoard.boardArr[moveToPos.x, moveToPos.y] = true;
                     (curPlayer ? newBoard.player1Pieces : newBoard.player2Pieces)[i] = moveToPos;
-                    float newValue = newBoard.EvaluateBoard(n - 1, ref doesWin);
-                    if (doesWin || (curPlayer ? (newValue > ret) : (newValue < ret)))
-                        ret = newValue;
+                    float newValue = newBoard.EvaluateBoard(n - 1, priorWeight, ref doesWin);
+                    if (doesWin || (curPlayer ? (newValue > optimalValue) : (newValue < optimalValue)))
+                        optimalValue = newValue;
                 }
             }
-            return ret;
+            float currentValue = EvaluateBoard(ref doesWin);
+            return currentValue * priorWeight + optimalValue * (1-priorWeight);
         }
 
         // remember: a high score means that Player1 has a good board.

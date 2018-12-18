@@ -260,7 +260,6 @@ public class BoardManager : MonoBehaviour {
         }
         else
         {
-            bool waitBefore = false;
             if (GetIsWin())
             {
                 curPlayer.hasWon = true;
@@ -278,7 +277,8 @@ public class BoardManager : MonoBehaviour {
                 playerTurn++;
             //rotate camera
             //get 'from' and 'to' positions, increment curPlayer
-			if (camRotate) {
+            bool waitBefore = !curPlayer.isManual;
+            if (camRotate) {
 				camControl.from = curPlayer.cameraPosition;
 				if (!curPlayer.isManual) {
 					waitBefore = true;
@@ -287,27 +287,24 @@ public class BoardManager : MonoBehaviour {
 				camControl.to = curPlayer.cameraPosition;
 				//rotate camera
 				ResetNewTurn ();
-				if (waitBefore)
-					StartCoroutine (WaitAI ());
-				else {
-					UpdatePlayerTurnText ();
-					camControl.rotate = true;
-				}
+                StartCoroutine(WaitAI(waitBefore ? 0.8f : 0.2f, true));
 			} else {
 				curPlayer = players [playerTurn % players.Length];
-				ResetNewTurn ();
-				UpdatePlayerTurnText ();
-				if (!gameEnded && !curPlayer.isManual)
-					curPlayer.DoMove ();
-			}
+                StartCoroutine(WaitAI(waitBefore ? 0.8f : 0.2f, false));
+            }
         }
     }
 
-	IEnumerator WaitAI(){
-		yield return new WaitForSeconds (0.8f);
-		camControl.rotate = true;
+    IEnumerator WaitAI(float seconds, bool doRotate){
+		yield return new WaitForSeconds (seconds);
+        ResetNewTurn();
         UpdatePlayerTurnText();
-	}
+        if (doRotate)
+            camControl.rotate = true;
+        else
+            if (!gameEnded && !curPlayer.isManual)
+                curPlayer.DoMove();
+    }
 
     //// Call this to move the target -- also changes its color and stuff!
     //private void SetTargetPosition(Vector2Int newPos)
